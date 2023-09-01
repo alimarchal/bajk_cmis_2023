@@ -3,7 +3,9 @@
 <head>
     @include('theme.header')
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+{{--<body class="hold-transition sidebar-mini layout-fixed">--}}
+<body class="hold-transition sidebar-mini sidebar-collapse">
+
 
 <div class="wrapper">
 

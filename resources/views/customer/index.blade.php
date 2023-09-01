@@ -14,12 +14,17 @@
     <style>
 
         @media print {
-            .table thead tr td,.table tbody tr td{
+            .table thead tr td, .table tbody tr td {
                 border-width: 1px !important;
                 border-style: solid !important;
                 border-color: black !important;
                 /*padding:0px;*/
-                -webkit-print-color-adjust:exact ;
+                -webkit-print-color-adjust: exact;
+            }
+
+            a.print_on_screen {
+                text-decoration: none;
+                color: black;
             }
 
             table.table-bordered > thead > tr > th {
@@ -31,7 +36,6 @@
             }
 
         }
-
 
         @media screen {
             table.table-bordered {
@@ -48,6 +52,13 @@
         }
 
     </style>
+
+
+    <link rel="stylesheet" href="https://cms.ajkced.gok.pk/daterange/daterangepicker.min.css">
+{{--    <script src="https://cms.ajkced.gok.pk/daterange/jquery-3.6.0.min.js"></script>--}}
+    <script src="https://cms.ajkced.gok.pk/daterange/moment.min.js"></script>
+    <script src="https://cms.ajkced.gok.pk/daterange/knockout-3.5.1.js" defer></script>
+    <script src="https://cms.ajkced.gok.pk/daterange/daterangepicker.min.js" defer></script>
 @endsection
 
 @section('body')
@@ -59,41 +70,102 @@
 
 
     <form method="get" action="{{route('customer.index')}}">
-        <div class="filters"  style="display:none;">
+        <div class="filters" style="display:none;">
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label for="search">Search</label>
-                    <input type="text" class="form-control" id="search" name="filter[search_string]" value="{{ empty(request()->filter['search_string']) ? '' : request()->filter['search_string'] }}">
+                    <input type="text" class="form-control" id="search" name="filter[search_string]" value="{{ request()->input('filter.search_string') }}">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="cnic">CNIC</label>
-                    <input type="text" class="form-control" id="cnic" name="filter[customer_cnic]" value="">
+                    <input type="text" class="form-control" id="cnic" name="filter[customer_cnic]" value="{{ request()->input('filter.customer_cnic') }}">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="account_no">Account No</label>
-                    <input type="text" class="form-control" id="account_no" name="filter[account_cd_saving]" value="">
+                    <input type="text" class="form-control" id="account_no" name="filter[account_cd_saving]" value="{{ request()->input('filter.account_cd_saving') }}">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="manual_account">Manual Account No</label>
-                    <input type="text" class="form-control" id="manual_account" name="filter[manual_account]" value="">
+                    <input type="text" class="form-control" id="manual_account" name="filter[manual_account]" value="{{ request()->input('filter.manual_account') }}">
                 </div>
+
+                <div class="form-group col-md-3">
+                    <label for="product_type_id">Facility Type</label>
+                    <select class="form-control select2bs4" id="product_type_id" name="filter[product_type_id]" style="width:100%">
+                        <option value="">None</option>
+                        @php
+                            $selectedProductType = request()->input('filter.product_type_id');
+                            $productTypes = \App\Models\ProductType::groupBy('product_type')->orderBy('product_type', 'asc')->get();
+                        @endphp
+                        @foreach($productTypes as $product_type)
+                            <option value="{{ $product_type->id }}" {{ $selectedProductType == $product_type->id ? 'selected' : '' }}>
+                                {{ $product_type->product_type }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+
                 <div class="form-group col-md-3">
                     <label for="gender">Gender</label>
                     <select class="form-control select2bs4" id="gender" name="filter[gender]" style="width:100%">
                         <option value="">None</option>
-                        <option value="Male" >Male</option>
-                        <option value="Female" >Female</option>
+                        @php
+                            $selectedGender = request()->input('filter.gender');
+                        @endphp
+                        <option value="Male" {{ $selectedGender === 'Male' ? 'selected' : '' }}>Male</option>
+                        <option value="Female" {{ $selectedGender === 'Female' ? 'selected' : '' }}>Female</option>
                     </select>
                 </div>
+
 
                 <div class="form-group col-md-3">
                     <label for="status">Adjusted/Non-Adjusted</label>
                     <select class="form-control select2bs4" id="status" name="filter[status]" style="width:100%">
                         <option value="">None</option>
-                        <option value="0" >Adjusted</option>
-                        <option value="1" >Non-Adjusted</option>
+                        @php
+                            $selectedStatus = request()->input('filter.status');
+                        @endphp
+                        <option value="0" {{ $selectedStatus === '0' ? 'selected' : '' }}>Adjusted</option>
+                        <option value="1" {{ $selectedStatus === '1' ? 'selected' : '' }}>Non-Adjusted</option>
                     </select>
                 </div>
+
+                <div class="form-group col-md-3">
+                    <label for="per_page_count">Pages</label>
+                    <select class="form-control select2bs4" id="per_page_count" name="per_page_count" style="width:100%">
+                        <option value="">None</option>
+                        <option value="20" {{ request()->input('per_page_count') === '20' ? 'selected' : '' }}>20</option>
+                        <option value="50" {{ request()->input('per_page_count') === '50' ? 'selected' : '' }}>50</option>
+                        <option value="100" {{ request()->input('per_page_count') === '100' ? 'selected' : '' }}>100</option>
+                        <option value="500" {{ request()->input('per_page_count') === '500' ? 'selected' : '' }}>500</option>
+                        <option value="1000" {{ request()->input('per_page_count') === '1000' ? 'selected' : '' }}>1000</option>
+                        <option value="10000" {{ request()->input('per_page_count') === '10000' ? 'selected' : '' }}>10000</option>
+                        <option value="100000" {{ request()->input('per_page_count') === '100000' ? 'selected' : '' }}>100000</option>
+                    </select>
+                </div>
+
+
+                <div class="form-group col-md-3">
+                    <label for="customer_status"><strong>NPL Status</strong></label>
+                    <select class="form-control select2bs4" id="customer_status" name="filter[customer_status]" style="width:100%">
+                        <option value="">None</option>
+                        <option value="Regular" {{ request()->input('filter.customer_status') === 'Regular' ? 'selected' : '' }}>Regular</option>
+                        <option value="Irregular" {{ request()->input('filter.customer_status') === 'Irregular' ? 'selected' : '' }}>Irregular</option>
+                        <option value="OAEM" {{ request()->input('filter.customer_status') === 'OAEM' ? 'selected' : '' }}>OAEM</option>
+                        <option value="Substandard" {{ request()->input('filter.customer_status') === 'Substandard' ? 'selected' : '' }}>Substandard</option>
+                        <option value="Doubtful" {{ request()->input('filter.customer_status') === 'Doubtful' ? 'selected' : '' }}>Doubtful</option>
+                        <option value="Loss" {{ request()->input('filter.customer_status') === 'Loss' ? 'selected' : '' }}>Loss</option>
+                    </select>
+                </div>
+
+
+                <div class="form-group col-md-3">
+                    <label for="date_range">Date Range</label>
+                    <input class="form-control" type="search" readonly name="filter[starts_before]" id="date_range">
+                </div>
+
+
             </div>
 
 
@@ -109,60 +181,64 @@
             <div class="col-md-12 p-3">
                 <a href="javascript:;" class="btn btn-primary showModule float-right" data-target="filters">
                     Show Filters</a>
-{{--                <input type="submit" name="search" value="Export" class="btn btn-success float-right mr-2">--}}
+                {{--                <input type="submit" name="search" value="Export" class="btn btn-success float-right mr-2">--}}
             </div>
         </div>
     </form>
-{{--sss | {{ request()->input('filter[search_string]', old('filter[search_string]')) }}--}}
+    {{--sss | {{ request()->input('filter[search_string]', old('filter[search_string]')) }}--}}
 
 
     <h3 class="text-center">The Bank of Azad Jammu & Kashmir</h3>
     <br>
 
-@if($customers->isNotEmpty())
-<table class="table table-bordered ">
-   <thead>
-   <tr>
-       <th scope="col">#</th>
-       <th scope="col">Name</th>
-       <th scope="col">CNIC</th>
-       <th scope="col">AC Number</th>
-       <th scope="col">Facility</th>
-       <th scope="col">Type</th>
-       <th scope="col">Branch</th>
-       <th scope="col" class="text-center">Action</th>
-       <th scope="col" class="text-center">Installment</th>
-   </tr>
-   </thead>
-   <tbody>
-   @foreach($customers as $customer)
-       <tr>
-           <td scope="row"><strong>{{$loop->iteration}}</strong></td>
-                <td>
-                    <a href="{{route('customer.profile',$customer->id)}}">{{ucwords(strtolower($customer->name))}}</a>
-                </td>
-                <td>{{$customer->customer_cnic}}</td>
-                <td>{{$customer->branch->code}}-{{$customer->account_cd_saving}}</td>
-                <td>{{$customer->product_type->product_type}}</td>
-                <td>{{$customer->secure_unsecure_loan}}</td>
-                <td>{{$customer->branch->name}}</td>
-                <td class="text-center">
-                    <a href="{{route('customer.show', $customer->id)}}">
-                        <span class="fas fa-edit"></span>
-                    </a>
-                </td>
-
-               <td class="text-center">
-                   <a href="{{route('installment.index', $customer->id)}}">
-                       <span class="fas fa-money-bill"></span>
-                   </a>
-               </td>
+    @if($customers->isNotEmpty())
+        <table class="table table-bordered ">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">CNIC</th>
+                <th scope="col">AC Number</th>
+                <th scope="col">Facility</th>
+                <th scope="col">Type</th>
+                <th scope="col">Branch</th>
+                <th scope="col">Category</th>
+                <th scope="col" class="text-center d-print-none">Action</th>
+                <th scope="col" class="text-center d-print-none">Installment</th>
             </tr>
-        @endforeach
-        </tbody>
+            </thead>
+            <tbody>
+            @foreach($customers as $customer)
+                <tr>
+                    <td scope="row"><strong>{{$loop->iteration}}</strong></td>
+                    <td>
+                        <a href="{{ route('customer.profile', $customer->id) }}" class="print_on_screen">
+                            {{ ucwords(strtolower($customer->name)) }}
+                        </a>
+                    </td>
+                    <td>{{$customer->customer_cnic}}</td>
+                    <td>{{$customer->branch->code}}-{{$customer->account_cd_saving}}</td>
+                    <td>{{$customer->product_type->product_type}}</td>
+                    <td>{{$customer->secure_unsecure_loan}}</td>
+                    <td>{{$customer->branch->name}}</td>
+                    <td>{{$customer->customer_status}}</td>
+                    <td class="text-center d-print-none">
+                        <a href="{{route('customer.show', $customer->id)}}">
+                            <span class="fas fa-edit"></span>
+                        </a>
+                    </td>
+
+                    <td class="text-center d-print-none">
+                        <a href="{{route('installment.index', $customer->id)}}">
+                            <span class="fas fa-money-bill"></span>
+                        </a>
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
 
 
-    </table>
+        </table>
     @endif
     {{$customers->links()}}
 @endsection
@@ -232,6 +308,15 @@
                     $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
                 }
             )
+
+
+            $("#date_range").daterangepicker({
+                minDate: moment().subtract(10, 'years'),
+                orientation: 'left',
+                callback: function (startDate, endDate, period) {
+                    $(this).val(startDate.format('L') + ' – ' + endDate.format('L'));
+                }
+            });
 
             //Timepicker
             $('#timepicker').datetimepicker({

@@ -70,21 +70,23 @@
                 <th scope="col">Date</th>
                 <th scope="col">Principal</th>
                 <th scope="col">Mark-Up</th>
-                <th scope="col">Penalty Charges</th>
-                <th scope="col">Insurance Charges</th>
+                <th scope="col">Penalty</th>
+                <th scope="col">Insurance</th>
                 <th scope="col">Total</th>
+                <th scope="col">Principal OS</th>
             </tr>
             </thead>
             <tbody>
             @foreach($customer->installments as $co)
                 <tr>
                     <th scope="row">{{$loop->iteration}}</th>
-                    <td>{{\Carbon\Carbon::parse($co->date)->format('d-m-Y')}}</td>
+                    <td>{{\Carbon\Carbon::parse($co->date)->format('d-M-Y')}}</td>
                     <td>{{$co->principal_amount}}</td>
                     <td>{{$co->mark_up_amount}}</td>
                     <td>{{$co->penalty_charges}}</td>
                     <td>{{$co->insurance_charges}}</td>
                     <td>{{$co->total_principal_markup_penalty}}</td>
+                    <td>{{$co->principal_outstanding}}</td>
                 </tr>
             @endforeach
 

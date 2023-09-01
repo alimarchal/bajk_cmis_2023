@@ -9,12 +9,16 @@ use App\Models\BranchOutstanding;
 use App\Models\BranchOutstandingDaily;
 use App\Models\Customer;
 use App\Models\Installment;
+use App\Models\Insurance;
 use App\Models\Interest;
+use App\Models\MarkUpDetails;
+use App\Models\OverDueInstallment;
 use App\Models\ProductWiseDaily;
 use App\Models\ProductWiseMonthly;
 use App\Models\Test;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -24,10 +28,6 @@ class CustomerController extends Controller
 {
     public function dashboard()
     {
-
-
-
-
 
         // Consumer Finance First Category
 //        $consumer_loan_first_cat = Customer::where('product_id', 1)->whereIn('product_type_id',[2,3,6])->where('status', 1)->get();
@@ -131,8 +131,6 @@ class CustomerController extends Controller
 //                $cl->save();
 //            }
 //        }
-
-
 
 
 //
@@ -340,21 +338,25 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $customers = null;
+        $per_page_count = $request->input('per_page_count', 10);
+
         if (Auth::user()->hasRole(['Credit Officer', 'Branch Manager'])) {
-//            dd(auth()->user()->getRoleNames());
             $customers = QueryBuilder::for(Customer::with('branch', 'product', 'product_type')->where('branch_id', \auth()->user()->branch_id))
                 ->allowedFilters([
+                    AllowedFilter::scope('starts_before'),
                     AllowedFilter::scope('search_string'),
                     AllowedFilter::exact('customer_cnic'),
+                    AllowedFilter::exact('product_type_id'),
+                    AllowedFilter::exact('customer_status'),
                     AllowedFilter::exact('branch_id'),
                     AllowedFilter::exact('account_cd_saving'),
                     AllowedFilter::exact('gender'),
                     AllowedFilter::exact('manual_account'),
                     AllowedFilter::exact('status'),
-                ])->paginate(10)->withQueryString();
+                ])->paginate($per_page_count)->withQueryString();
         } elseif (Auth::user()->hasRole('South Regional MIS Officer')) {
             $south_branches = Branch::where('region', 'South Region')->get('id');
             $branches = [];
@@ -366,12 +368,14 @@ class CustomerController extends Controller
                 ->allowedFilters([
                     AllowedFilter::scope('search_string'),
                     AllowedFilter::exact('customer_cnic'),
+                    AllowedFilter::exact('product_type_id'),
+                    AllowedFilter::exact('customer_status'),
                     AllowedFilter::exact('branch_id'),
                     AllowedFilter::exact('account_cd_saving'),
                     AllowedFilter::exact('gender'),
                     AllowedFilter::exact('manual_account'),
                     AllowedFilter::exact('status'),
-                ])->paginate(10)->withQueryString();
+                ])->paginate($per_page_count)->withQueryString();
         } elseif (Auth::user()->hasRole('North Regional MIS Officer')) {
 
             $north_branches = Branch::where('region', 'North Region')->get('id');
@@ -384,23 +388,27 @@ class CustomerController extends Controller
                 ->allowedFilters([
                     AllowedFilter::scope('search_string'),
                     AllowedFilter::exact('customer_cnic'),
+                    AllowedFilter::exact('product_type_id'),
+                    AllowedFilter::exact('customer_status'),
                     AllowedFilter::exact('branch_id'),
                     AllowedFilter::exact('account_cd_saving'),
                     AllowedFilter::exact('gender'),
                     AllowedFilter::exact('manual_account'),
                     AllowedFilter::exact('status'),
-                ])->paginate(10)->withQueryString();
+                ])->paginate($per_page_count)->withQueryString();
         } elseif (Auth::user()->hasRole(['Head Office', 'Super-Admin'])) {
             $customers = QueryBuilder::for(Customer::with('branch', 'product', 'product_type'))
                 ->allowedFilters([
                     AllowedFilter::scope('search_string'),
                     AllowedFilter::exact('customer_cnic'),
+                    AllowedFilter::exact('product_type_id'),
+                    AllowedFilter::exact('customer_status'),
                     AllowedFilter::exact('branch_id'),
                     AllowedFilter::exact('account_cd_saving'),
                     AllowedFilter::exact('gender'),
                     AllowedFilter::exact('manual_account'),
                     AllowedFilter::exact('status'),
-                ])->paginate(10)->withQueryString();
+                ])->paginate($per_page_count)->withQueryString();
         }
 
         return view('customer.index', compact('customers'));

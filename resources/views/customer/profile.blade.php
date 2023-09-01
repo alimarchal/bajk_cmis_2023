@@ -438,32 +438,28 @@
         <table class="table table-bordered border-collapse">
             <thead>
             <tr>
-                <th colspan="9" class="text-center font-weight-bold">Installment</th>
+                <th colspan="9" class="text-center font-weight-bold">Installments</th>
             </tr>
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Date</th>
-                <th scope="col">No of Installment</th>
-                <th scope="col">Days Passed Overdue</th>
                 <th scope="col">Principal</th>
                 <th scope="col">Mark-Up</th>
-                <th scope="col">Penalty Charges</th>
+                <th scope="col">Penalty</th>
+                <th scope="col">Insurance</th>
                 <th scope="col">Total</th>
-                <th scope="col">Category</th>
             </tr>
             </thead>
             <tbody>
             @foreach($customer->installments as $co)
                 <tr>
                     <td scope="row">{{$loop->iteration}}</td>
-                    <td>{{\Carbon\Carbon::parse($co->date)->format('d-m-Y')}}</td>
-                    <td>{{$co->no_of_installment}}</td>
-                    <td>{{$co->days_passed_overdue}}</td>
+                    <td>{{\Carbon\Carbon::parse($co->date)->format('d-M-Y')}}</td>
                     <td>{{$co->principal_amount}}</td>
                     <td>{{$co->mark_up_amount}}</td>
                     <td>{{$co->penalty_charges}}</td>
-                    <td>{{$co->total_principal_markup_penalty}}</td>
-                    <td>{{$co->category_of_default}}</td>
+                    <td>{{$co->penalty_charges}}</td>
+                    <td>{{$co->insurance_charges}}</td>
                 </tr>
             @endforeach
 
@@ -483,8 +479,8 @@
                 <th scope="col">Date</th>
                 <th scope="col">Mark-Up Receivable (4600)</th>
                 <th scope="col">Mark-Up Recovered Till Date</th>
-                <th scope="col">Mark-Up Recovered A/C (5008)</th>
-                <th scope="col">Mark-Up Reserved A/C (2305)</th>
+                <th scope="col">Mark-Up Recoverable A/C (5008)</th>
+                <th scope="col">Mark-Up Reserve A/C (2305)</th>
             </tr>
             </thead>
             <tbody>

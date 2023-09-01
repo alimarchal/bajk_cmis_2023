@@ -34,12 +34,12 @@
             </div>
 
             <div class="col-md-3 mb-2">
-                <label for="markup_recovered_ac_5008"><strong>Mark-Up Recovered A/C (5008)</strong></label>
+                <label for="markup_recovered_ac_5008"><strong>Mark-Up Recoverable A/C (5008)</strong></label>
                 <input type="number" step="0.01" class="form-control" id="markup_recovered_ac_5008" name="markup_recovered_ac_5008">
             </div>
 
             <div class="col-md-3 mb-2">
-                <label for="markup_recovered_ac_2405"><strong>Mark-Up Reserved A/C (2305)</strong></label>
+                <label for="markup_recovered_ac_2405"><strong>Mark-Up Reserve A/C (2305)</strong></label>
                 <input type="number" step="0.01" class="form-control" id="markup_recovered_ac_2405" name="markup_recovered_ac_2405">
             </div>
 
@@ -61,15 +61,15 @@
                 <th scope="col">Date</th>
                 <th scope="col">Mark-Up Receivable (4600)</th>
                 <th scope="col">Mark-Up Recovered Till Date</th>
-                <th scope="col">Mark-Up Recovered A/C (5008)</th>
-                <th scope="col">Mark-Up Reserved A/C (2305)</th>
+                <th scope="col">Markup Recoverable A/C (5008)</th>
+                <th scope="col">Markup Reserve A/C (2305)</th>
             </tr>
             </thead>
             <tbody>
             @foreach($customer->markup_details as $co)
                 <tr>
                     <th scope="row">{{$loop->iteration}}</th>
-                    <td>{{\Carbon\Carbon::parse($co->date)->format('d-m-Y')}}</td>
+                    <td>{{\Carbon\Carbon::parse($co->date)->format('d-M-Y')}}</td>
                     <td>{{$co->markup_receivable_4600}}</td>
                     <td>{{$co->markup_recovered_till_date}}</td>
                     <td>{{$co->markup_recovered_ac_5008}}</td>

@@ -28,12 +28,7 @@
 
             <div class="col-md-3 mb-3">
                 <label for="days_passed_overdue"><strong>Days Passed Overdue</strong></label>
-                <select class="form-control select2bs4" required id="days_passed_overdue" style="width: 100%;" name="days_passed_overdue">
-                    <option value="">None</option>
-                    @for($i = 1; $i <= 240; $i++)
-                        <option value="{{$i}}">{{$i}}</option>
-                    @endfor
-                </select>
+                <input type="number" min="0" max="10000" required class="form-control" id="days_passed_overdue" name="days_passed_overdue">
             </div>
 
 
@@ -58,7 +53,6 @@
             </div>
 
 
-
             <div class="col-md-3 mb-2">
                 <label for="total_principal_markup_penalty"><strong>Total</strong></label>
                 <input type="number" step="0.01" class="form-control" required readonly id="total_principal_markup_penalty" name="total_principal_markup_penalty">
@@ -67,7 +61,7 @@
 
             <div class="col-md-3 mb-3">
                 <label for="category_of_default"><strong>Category</strong></label>
-                <input type="text" step="0.01" class="form-control" required readonly id="category_of_default" name="category_of_default">
+                <input type="text" class="form-control" required readonly id="category_of_default" name="category_of_default">
 
             </div>
         </div>
@@ -169,7 +163,7 @@
 
                 $principal_amount = parseFloat($("#principal_amount").val(), 2);
                 $mark_up_amount = parseFloat($("#mark_up_amount").val(), 2);
-                $insurance_charges =parseFloat($(this).val(), 2);
+                $insurance_charges = parseFloat($(this).val(), 2);
                 $penalty_charges = parseFloat($("#penalty_charges").val(), 2);
 
                 $total_principal_markup_penalty = $principal_amount + $mark_up_amount + $penalty_charges + $insurance_charges;
@@ -180,42 +174,85 @@
 
             $("#days_passed_overdue").change(function () {
 
-                $days_passed_overdue = parseFloat($(this).val(), 0);
-                if ($days_passed_overdue <= 30) {
-                    $("#category_of_default").val('Regular');
+                var days_passed_overdue = parseFloat($(this).val(), 0);
+                var loanCategory = "{{ $customer->product_type->product_type }}";
+
+                var category_of_default = "";
+
+                if (loanCategory === "Auto Loan" || loanCategory === "Motorcycle Finance" || loanCategory === "House Finance") {
+                    if (days_passed_overdue < 90) {
+                        category_of_default = "NIL";
+                    } else if (days_passed_overdue >= 90 && days_passed_overdue < 180) {
+                        category_of_default = "Substandard";
+                    } else if (days_passed_overdue >= 180 && days_passed_overdue < 365) {
+                        category_of_default = "Doubtful";
+                    } else if (days_passed_overdue >= 365) {
+                        category_of_default = "Loss";
+                    }
+                } else if (loanCategory === "Aasaish Loan" || loanCategory === "Computer Loan" || loanCategory === "Advance Salary Loan" || loanCategory === "Personal Loan" || loanCategory === "Student Loan" || loanCategory === "Gold Loan" || loanCategory === "Home Appliances") {
+                    if (days_passed_overdue < 90) {
+                        category_of_default = "NIL";
+                    } else if (days_passed_overdue >= 90 && days_passed_overdue < 180) {
+                        category_of_default = "Substandard";
+                    } else if (days_passed_overdue >= 180) {
+                        category_of_default = "Loss";
+                    }
+                } else if (loanCategory === "AKSIC" || loanCategory === "AKSIC Cr Assistance Scheme" || loanCategory === "Running Finance" || loanCategory === "House/Construction" || loanCategory === "Auto Finance" || loanCategory === "Tourism Promotion" || loanCategory === "Health Care Services (DF)" || loanCategory === "SBTF" || loanCategory === "Demand Finance" || loanCategory === "Health Care Services (RF)" || loanCategory === "Promotion of Tourism") {
+                    if (days_passed_overdue < 90) {
+                        category_of_default = "NIL";
+                    } else if (days_passed_overdue >= 90 && days_passed_overdue < 180) {
+                        category_of_default = "Substandard";
+                    } else if (days_passed_overdue >= 180 && days_passed_overdue < 365) {
+                        category_of_default = "Doubtful";
+                    } else if (days_passed_overdue >= 365) {
+                        category_of_default = "Loss";
+                    }
+                } else if (loanCategory === "Micro Enterprise Loan" || loanCategory === "Murgbani (Individual)" || loanCategory === "Woman Empowerment" || loanCategory === "Murgbani (Group)" || loanCategory === "AJKRSP" || loanCategory === "Micro Group Loan") {
+                    if (days_passed_overdue < 30) {
+                        category_of_default = "NIL";
+                    } else if (days_passed_overdue >= 30 && days_passed_overdue < 89) {
+                        category_of_default = "Substandard";
+                    } else if (days_passed_overdue >= 90 && days_passed_overdue < 179) {
+                        category_of_default = "Doubtful";
+                    } else if (days_passed_overdue >= 180) {
+                        category_of_default = "Loss";
+                    }
+                } else if (loanCategory === "Agri Business Promotion Loan" || loanCategory === "Agri Production") {
+                    if (days_passed_overdue < 90) {
+                        category_of_default = "NIL";
+                    } else if (days_passed_overdue >= 90 && days_passed_overdue < 365) {
+                        category_of_default = "OEAM";
+                    } else if (days_passed_overdue >= 365 && days_passed_overdue < 730) {
+                        category_of_default = "Doubtful";
+                    } else if (days_passed_overdue >= 730) {
+                        category_of_default = "Loss";
+                    }
+                } else if (loanCategory === "Agri Business Promotion Loan" || loanCategory === "Agri Production") {
+                    if (days_passed_overdue < 90) {
+                        category_of_default = "NIL";
+                    } else if (days_passed_overdue >= 90 && days_passed_overdue < 365) {
+                        category_of_default = "OEAM";
+                    } else if (days_passed_overdue >= 365 && days_passed_overdue < 730) {
+                        category_of_default = "Doubtful";
+                    } else if (days_passed_overdue >= 730) {
+                        category_of_default = "Loss";
+                    }
+                } else if (loanCategory === "Agri Business Promotion Loan" || loanCategory === "Agri Development Loan" || loanCategory === "Poultry Promotion Loan (MOU)" || loanCategory === "Dairy/Goat/Sheep Farming Loan (MOU)") {
+                    if (days_passed_overdue < 90) {
+                        category_of_default = "NIL";
+                    } else if (days_passed_overdue >= 90 && days_passed_overdue < 365) {
+                        category_of_default = "OEAM";
+                    } else if (days_passed_overdue >= 365 && days_passed_overdue < 1095) {
+                        category_of_default = "Doubtful";
+                    } else if (days_passed_overdue >= 1095) {
+                        category_of_default = "Loss";
+                    }
                 }
-                else if ($days_passed_overdue > 30 && $days_passed_overdue <= 90) {
-                    $("#category_of_default").val('Irregular');
-                }
-                else if ($days_passed_overdue >= 90 && $days_passed_overdue <= 180) {
-                    $("#category_of_default").val('Doubtful');
-                }
-                else if ($days_passed_overdue > 180) {
-                    $("#category_of_default").val('Loss');
-                }
+
+                $("#category_of_default").val(category_of_default);
 
             });
 
-
-            // $kibor_value = 0
-            // $bank_spread_rate = 0
-            // $total_value = $kibor_value + $bank_spread_rate;
-            //
-            // $("#kibor_rate").change(function() {
-            //     $kibor_value = parseFloat($(this).val(),2);
-            //     $bank_spread_rate = parseFloat($("#bank_spread_rate").val());
-            //     $total_value = $kibor_value + $bank_spread_rate;
-            //     $("#mark_up_rate").val(parseFloat($total_value));
-            // });
-            //
-            // $("#bank_spread_rate").change(function() {
-            //
-            //     $bank_spread_rate = parseFloat($(this).val(),2);
-            //     $kibor_value = parseFloat($("#kibor_rate").val());
-            //     $total_value = $kibor_value + $bank_spread_rate;
-            //     $("#mark_up_rate").val(parseFloat($total_value));
-            //     // alert($total_value);
-            // });
         });
 
         $(function () {

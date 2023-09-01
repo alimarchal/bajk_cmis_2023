@@ -21,6 +21,38 @@ class Customer extends Model
         6 => Loss
      */
 
+
+
+    public function scopeStartsBefore(Builder $query, $date): Builder
+    {
+        if (!empty($date)) {
+            $datetime1 = null;
+            $datetime2 = null;
+
+            if (isset($date) && !empty($date)) {
+                $dates = explode(' – ', $date);
+                $fdate = @$dates[0];
+                $tdate = @$dates[1];
+                if (!empty($fdate) && !empty($tdate)) {
+                    $datetime1 = new \DateTime($fdate);
+                    $datetime2 = new \DateTime($tdate);
+                }
+            }
+
+            $date_from = null;
+            $date_to = null;
+
+            if (!empty($date)) {
+                $date_from = $datetime1->format('Y-m-d');
+                $date_to = $datetime2->format('Y-m-d');
+            }
+
+
+        }
+
+        return $query->whereBetween('created_at', [$date_from, $date_to]);
+    }
+
     public function scopeSearchString(Builder $query, $search): Builder
     {
         return $query->where('name', 'LIKE', '%' . $search . '%')->
