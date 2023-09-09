@@ -53,8 +53,10 @@
                 <tr>
                     <th scope="row">{{$loop->iteration}}</th>
                     <td>{{$co->evaluator_company}}</td>
-                    <td>{{\Carbon\Carbon::parse($co->date_of_valuation)->format('d-m-Y')}}</td>
-                    <td>{{\Carbon\Carbon::parse($co->date_of_valuation_expiry)->format('d-m-Y')}}</td>
+{{--                    <td>{{\Carbon\Carbon::parse($co->date_of_valuation)->format('d-m-Y')}}</td>--}}
+                    <td>{{$co->date_of_valuation}}</td>
+                    <td>{{$co->date_of_valuation_expiry}}</td>
+{{--                    <td>{{\Carbon\Carbon::parse($co->date_of_valuation_expiry)->format('d-m-Y')}}</td>--}}
                 </tr>
             @endforeach
 

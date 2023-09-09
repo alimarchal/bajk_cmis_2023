@@ -220,7 +220,7 @@
                     <td>{{$customer->branch->code}}-{{$customer->account_cd_saving}}</td>
                     <td>{{$customer->product_type->product_type}}</td>
                     <td>{{$customer->secure_unsecure_loan}}</td>
-                    <td>{{$customer->branch->name}}</td>
+                    <td>{{$customer->branch->code}}</td>
                     <td>{{$customer->customer_status}}</td>
                     <td class="text-center d-print-none">
                         <a href="{{route('customer.show', $customer->id)}}">
