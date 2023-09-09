@@ -49,8 +49,14 @@ class Customer extends Model
 
 
         }
-
         return $query->whereBetween('created_at', [$date_from, $date_to]);
+    }
+
+
+    public function scopeCustomerStatusCustom(Builder $query, $value1, $value2): Builder
+    {
+        $values = [$value1, $value2];
+        return $query->whereNotIn('customer_status', $values);
     }
 
     public function scopeSearchString(Builder $query, $search): Builder

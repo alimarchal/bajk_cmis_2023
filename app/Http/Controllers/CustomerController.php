@@ -350,6 +350,7 @@ class CustomerController extends Controller
                     AllowedFilter::scope('search_string'),
                     AllowedFilter::exact('customer_cnic'),
                     AllowedFilter::exact('product_type_id'),
+                    AllowedFilter::scope('customer_status_custom'),
                     AllowedFilter::exact('customer_status'),
                     AllowedFilter::exact('branch_id'),
                     AllowedFilter::exact('account_cd_saving'),
@@ -366,6 +367,7 @@ class CustomerController extends Controller
 
             $customers = QueryBuilder::for(Customer::with('branch', 'product', 'product_type')->whereIn('branch_id', $branches))
                 ->allowedFilters([
+                    AllowedFilter::scope('starts_before'),
                     AllowedFilter::scope('search_string'),
                     AllowedFilter::exact('customer_cnic'),
                     AllowedFilter::exact('product_type_id'),
@@ -373,8 +375,10 @@ class CustomerController extends Controller
                     AllowedFilter::exact('branch_id'),
                     AllowedFilter::exact('account_cd_saving'),
                     AllowedFilter::exact('gender'),
+                    AllowedFilter::exact('customer_status'),
                     AllowedFilter::exact('manual_account'),
                     AllowedFilter::exact('status'),
+
                 ])->paginate($per_page_count)->withQueryString();
         } elseif (Auth::user()->hasRole('North Regional MIS Officer')) {
 
@@ -386,6 +390,7 @@ class CustomerController extends Controller
 
             $customers = QueryBuilder::for(Customer::with('branch', 'product', 'product_type')->whereIn('branch_id', $branches))
                 ->allowedFilters([
+                    AllowedFilter::scope('starts_before'),
                     AllowedFilter::scope('search_string'),
                     AllowedFilter::exact('customer_cnic'),
                     AllowedFilter::exact('product_type_id'),
@@ -394,11 +399,14 @@ class CustomerController extends Controller
                     AllowedFilter::exact('account_cd_saving'),
                     AllowedFilter::exact('gender'),
                     AllowedFilter::exact('manual_account'),
+                    AllowedFilter::exact('customer_status'),
                     AllowedFilter::exact('status'),
+
                 ])->paginate($per_page_count)->withQueryString();
         } elseif (Auth::user()->hasRole(['Head Office', 'Super-Admin'])) {
             $customers = QueryBuilder::for(Customer::with('branch', 'product', 'product_type'))
                 ->allowedFilters([
+                    AllowedFilter::scope('starts_before'),
                     AllowedFilter::scope('search_string'),
                     AllowedFilter::exact('customer_cnic'),
                     AllowedFilter::exact('product_type_id'),

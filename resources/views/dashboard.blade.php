@@ -293,7 +293,16 @@
                         <div class="small-box bg-info">
                             <div class="inner">
                                 <h3>{{number_format($npl_accounts_amount,2)}}</h3>
-                                <p>Total NPL No of Accounts: {{$npl_accounts}}</p>
+                                <p>
+                                    @if(Auth::user()->hasRole(['Credit Officer', 'Branch Manager']))
+                                        <a href="{{ route('customer.index',["filter[customer_status_custom]=Regular,Irregular"]) }}" class="text-white hover:underline">
+                                            Total NPL No of Accounts: {{$npl_accounts}}
+                                        </a>
+                                    @else
+                                        Total NPL No of Accounts: {{$npl_accounts}}
+                                    @endif
+
+                                </p>
                             </div>
                             <div class="icon">
                                 <i class="fas fa-coins"></i>
