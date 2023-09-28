@@ -80,6 +80,13 @@
                     <label for="cnic">CNIC</label>
                     <input type="text" class="form-control" id="cnic" name="filter[customer_cnic]" value="{{ request()->input('filter.customer_cnic') }}">
                 </div>
+
+                <div class="form-group col-md-3">
+                    <label for="guarantee_cnic">Guarantor CNIC</label>
+                    <input type="text" class="form-control" id="guarantee_cnic" name="filter[guarantee.cnic]" value="{{ old('filter.guarantee.cnic', isset($_GET['filter']['guarantee.cnic']) ? $_GET['filter']['guarantee.cnic'] : '') }}">
+                </div>
+
+
                 <div class="form-group col-md-3">
                     <label for="account_no">Account No</label>
                     <input type="text" class="form-control" id="account_no" name="filter[account_cd_saving]" value="{{ request()->input('filter.account_cd_saving') }}">
@@ -160,6 +167,19 @@
                 </div>
 
 
+                @role('Super-Admin|North Regional MIS Officer|South Regional MIS Officer')
+                    <div class="form-group col-md-3">
+                        <label for="branch_id"><strong>Branch Name</strong></label>
+                        <select class="form-control select2bs4" id="branch_id" name="filter[branch_id]" style="width:100%">
+                            <option value="">None</option>
+                            @foreach(App\Models\Branch::all() as $branch)
+                                <option value="{{ $branch->id }}" {{ request()->input('filter.branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                @endrole
+
+
                 <div class="form-group col-md-3">
                     <label for="date_range">Date Range</label>
                     <input class="form-control" type="search" readonly name="filter[starts_before]" id="date_range">
@@ -198,13 +218,13 @@
                 <th scope="col">#</th>
                 <th scope="col">Name</th>
                 <th scope="col">CNIC</th>
-                <th scope="col">AC Number</th>
+                <th scope="col">Branch/AC No</th>
                 <th scope="col">Facility</th>
                 <th scope="col">Type</th>
-                <th scope="col">Branch</th>
+                <th scope="col" class="text-center"><abbr title="Principal Outstanding">POS</abbr></th>
+                <th scope="col" class="text-center"><abbr title=" Amount Disbursed ">AD</abbr></th>
                 <th scope="col">Category</th>
                 <th scope="col" class="text-center d-print-none">Action</th>
-                <th scope="col" class="text-center d-print-none">Installment</th>
             </tr>
             </thead>
             <tbody>
@@ -220,21 +240,26 @@
                     <td>{{$customer->branch->code}}-{{$customer->account_cd_saving}}</td>
                     <td>{{$customer->product_type->product_type}}</td>
                     <td>{{$customer->secure_unsecure_loan}}</td>
-                    <td>{{$customer->branch->code}}</td>
+                    <td class="text-right">{{ number_format($customer->principle_amount,2) }}</td>
+                    <td class="text-right">{{ number_format($customer->amount_disbursed,2) }}</td>
                     <td>{{$customer->customer_status}}</td>
                     <td class="text-center d-print-none">
                         <a href="{{route('customer.show', $customer->id)}}">
                             <span class="fas fa-edit"></span>
                         </a>
-                    </td>
 
-                    <td class="text-center d-print-none">
                         <a href="{{route('installment.index', $customer->id)}}">
                             <span class="fas fa-money-bill"></span>
                         </a>
                     </td>
                 </tr>
             @endforeach
+
+            <tr>
+                <td scope="row" class="text-bold text-right" colspan="6"><strong>Total:</strong></td>
+                <td class="text-right">{{ number_format($customers->sum('principle_amount'),2) }}</td>
+                <td class="text-right">{{ number_format($customers->sum('amount_disbursed'),2) }}</td>
+            </tr>
             </tbody>
 
 

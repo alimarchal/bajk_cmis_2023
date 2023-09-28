@@ -242,12 +242,12 @@ class CustomerController extends Controller
             $consumer_financing_outstanding = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '1')->sum('principle_amount');
             $commercial_sme_financing = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '2')->sum('principle_amount');
             $micro_financing = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '3')->sum('principle_amount');
-            $agriculture_financing = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '4')->sum('principle_amount');
+            $agriculture_financing = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '5')->sum('principle_amount');
 
             $consumer_financing_outstanding_noa = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '1')->count();
             $commercial_sme_financing_noa = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '2')->count();
             $micro_financing_noa = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '3')->count();
-            $agriculture_financing_noa = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '4')->count();
+            $agriculture_financing_noa = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '5')->count();
 
             $npl_accounts = Customer::where('branch_id', \auth()->user()->branch_id)->where('customers.status', '=', 1)->whereNotIn('customers.customer_status', ['Regular', 'Irregular'])->count();
             $npl_accounts_amount = Customer::where('branch_id', \auth()->user()->branch_id)->where('customers.status', '=', 1)->whereNotIn('customers.customer_status', ['Regular', 'Irregular'])->sum('principle_amount');
@@ -268,12 +268,12 @@ class CustomerController extends Controller
             $consumer_financing_outstanding = Customer::whereIn('branch_id', $branches)->where('product_id', '1')->sum('principle_amount');
             $commercial_sme_financing = Customer::whereIn('branch_id', $branches)->where('product_id', '2')->sum('principle_amount');
             $micro_financing = Customer::whereIn('branch_id', $branches)->where('product_id', '3')->sum('principle_amount');
-            $agriculture_financing = Customer::whereIn('branch_id', $branches)->where('product_id', '4')->sum('principle_amount');
+            $agriculture_financing = Customer::whereIn('branch_id', $branches)->where('product_id', '5')->sum('principle_amount');
 
             $consumer_financing_outstanding_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '1')->count();
             $commercial_sme_financing_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '2')->count();
             $micro_financing_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '3')->count();
-            $agriculture_financing_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '4')->count();
+            $agriculture_financing_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '5')->count();
 
 
             $npl_accounts = Customer::whereIn('branch_id', $branches)->where('customers.status', '=', 1)->whereNotIn('customers.customer_status', ['Regular', 'Irregular'])->count();
@@ -294,12 +294,12 @@ class CustomerController extends Controller
             $consumer_financing_outstanding = Customer::whereIn('branch_id', $branches)->where('product_id', '1')->sum('principle_amount');
             $commercial_sme_financing = Customer::whereIn('branch_id', $branches)->where('product_id', '2')->sum('principle_amount');
             $micro_financing = Customer::whereIn('branch_id', $branches)->where('product_id', '3')->sum('principle_amount');
-            $agriculture_financing = Customer::whereIn('branch_id', $branches)->where('product_id', '4')->sum('principle_amount');
+            $agriculture_financing = Customer::whereIn('branch_id', $branches)->where('product_id', '5')->sum('principle_amount');
 
             $consumer_financing_outstanding_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '1')->count();
             $commercial_sme_financing_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '2')->count();
             $micro_financing_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '3')->count();
-            $agriculture_financing_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '4')->count();
+            $agriculture_financing_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '5')->count();
 
             $npl_accounts = Customer::whereIn('branch_id', $branches)->where('customers.status', '=', 1)->whereNotIn('customers.customer_status', ['Regular', 'Irregular'])->count();
             $npl_accounts_amount = Customer::whereIn('branch_id', $branches)->where('customers.status', '=', 1)->whereNotIn('customers.customer_status', ['Regular', 'Irregular'])->sum('principle_amount');
@@ -312,12 +312,12 @@ class CustomerController extends Controller
             $consumer_financing_outstanding = Customer::where('product_id', '1')->sum('principle_amount');
             $commercial_sme_financing = Customer::where('product_id', '2')->sum('principle_amount');
             $micro_financing = Customer::where('product_id', '3')->sum('principle_amount');
-            $agriculture_financing = Customer::where('product_id', '4')->sum('principle_amount');
+            $agriculture_financing = Customer::where('product_id', '5')->sum('principle_amount');
 
             $consumer_financing_outstanding_noa = Customer::where('product_id', '1')->count();
             $commercial_sme_financing_noa = Customer::where('product_id', '2')->count();
             $micro_financing_noa = Customer::where('product_id', '3')->count();
-            $agriculture_financing_noa = Customer::where('product_id', '4')->count();
+            $agriculture_financing_noa = Customer::where('product_id', '5')->count();
 
             $npl_accounts = Customer::where('customers.status', '=', 1)->whereNotIn('customers.customer_status', ['Regular', 'Irregular'])->count();
             $npl_accounts_amount = Customer::where('customers.status', '=', 1)->whereNotIn('customers.customer_status', ['Regular', 'Irregular'])->sum('principle_amount');
@@ -349,6 +349,8 @@ class CustomerController extends Controller
                     AllowedFilter::scope('starts_before'),
                     AllowedFilter::scope('search_string'),
                     AllowedFilter::exact('customer_cnic'),
+                    AllowedFilter::exact('branch_id'),
+                    AllowedFilter::exact('product_id'),
                     AllowedFilter::exact('product_type_id'),
                     AllowedFilter::scope('customer_status_custom'),
                     AllowedFilter::exact('customer_status'),
@@ -369,6 +371,8 @@ class CustomerController extends Controller
                 ->allowedFilters([
                     AllowedFilter::scope('starts_before'),
                     AllowedFilter::scope('search_string'),
+                    AllowedFilter::exact('product_id'),
+                    AllowedFilter::exact('branch_id'),
                     AllowedFilter::exact('customer_cnic'),
                     AllowedFilter::exact('product_type_id'),
                     AllowedFilter::exact('customer_status'),
@@ -391,6 +395,8 @@ class CustomerController extends Controller
             $customers = QueryBuilder::for(Customer::with('branch', 'product', 'product_type')->whereIn('branch_id', $branches))
                 ->allowedFilters([
                     AllowedFilter::scope('starts_before'),
+                    AllowedFilter::exact('branch_id'),
+                    AllowedFilter::exact('product_id'),
                     AllowedFilter::scope('search_string'),
                     AllowedFilter::exact('customer_cnic'),
                     AllowedFilter::exact('product_type_id'),
@@ -404,11 +410,14 @@ class CustomerController extends Controller
 
                 ])->paginate($per_page_count)->withQueryString();
         } elseif (Auth::user()->hasRole(['Head Office', 'Super-Admin'])) {
-            $customers = QueryBuilder::for(Customer::with('branch', 'product', 'product_type'))
+            $customers = QueryBuilder::for(Customer::with('branch', 'product', 'guarantee', 'product_type'))
                 ->allowedFilters([
                     AllowedFilter::scope('starts_before'),
                     AllowedFilter::scope('search_string'),
+                    AllowedFilter::exact('branch_id'),
+                    AllowedFilter::exact('product_id'),
                     AllowedFilter::exact('customer_cnic'),
+                    AllowedFilter::exact('guarantee.cnic'),
                     AllowedFilter::exact('product_type_id'),
                     AllowedFilter::exact('customer_status'),
                     AllowedFilter::exact('branch_id'),

@@ -233,6 +233,9 @@
                             <div class="icon">
                                 <i class="fas fa-coins"></i>
                             </div>
+                            @role('Super-Admin|Head Office')
+                                <a href="{{ route('customer.index', ['filter[product_id]' => 1, 'per_page_count' => 10000]) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            @endrole
                         </div>
                     </div>
                     <!-- ./col -->
@@ -249,6 +252,9 @@
                             <div class="icon">
                                 <i class="fas fa-coins"></i>
                             </div>
+                            @role('Super-Admin|Head Office')
+                                <a href="{{ route('customer.index', ['filter[product_id]' => 2, 'per_page_count' => 10000]) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            @endrole
                         </div>
                     </div>
                     <!-- ./col -->
@@ -265,6 +271,9 @@
                             <div class="icon">
                                 <i class="fas fa-coins"></i>
                             </div>
+                            @role('Super-Admin|Head Office')
+                                <a href="{{ route('customer.index', ['filter[product_id]' => 3, 'per_page_count' => 10000]) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            @endrole
                         </div>
                     </div>
                     <!-- ./col -->
@@ -275,10 +284,14 @@
                                 <h3>{{number_format($agriculture_financing/1000000,3)}}M</h3>
 
                                 <p>Agriculture Financing<br>No of Accounts: {{$agriculture_financing_noa}}</p>
+
                             </div>
                             <div class="icon">
                                 <i class="fas fa-coins"></i>
                             </div>
+                            @role('Super-Admin|Head Office')
+                                <a href="{{ route('customer.index', ['filter[product_id]' => 5, 'per_page_count' => 10000]) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            @endrole
                         </div>
 
                     </div>
@@ -310,6 +323,7 @@
                             @can('Full Access')
                                 <a href="{{route('report.branchWiseNplPosition')}}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                             @endcan
+
                         </div>
                     </div>
                     <!-- ./col -->
