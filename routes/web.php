@@ -103,6 +103,12 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::post('/npl/{customer}', 'store')->name('npl.store');
     });
 
+    Route::controller(\App\Http\Controllers\EnhancementController::class)->group(function () {
+        Route::get('/customer/{customer}/enhancement', 'index')->name('enhancement.index');
+        Route::post('/enhancement/{customer}', 'store')->name('enhancement.store');
+    });
+
+
     Route::controller(\App\Http\Controllers\UserController::class)->group(function () {
         Route::get('/users', 'index')->name('users.index');
         Route::get('/users/create', 'create')->name('users.create');

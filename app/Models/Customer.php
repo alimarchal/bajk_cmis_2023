@@ -207,4 +207,9 @@ class Customer extends Model
         return $this->belongsTo(ProductType::class);
     }
 
+    public function enhancement(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Enhancement::class);
+    }
+
 }

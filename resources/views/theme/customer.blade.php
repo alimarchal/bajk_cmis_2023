@@ -46,11 +46,15 @@
         <a href="{{route('interest.index', $customer->id)}}" class="nav-link  @if(request()->routeIs('interest.*')) active @endif  ">Rate of Markup</a>
     </li>
 
-    @hasanyrole('Credit Officer|Branch Manager')
+{{--    @hasanyrole('Credit Officer|Branch Manager')--}}
     <li class="nav-item">
         <a href="{{route('npl.index', $customer->id)}}" class="nav-link  @if(request()->routeIs('npl.*')) active @endif  ">NPLs</a>
     </li>
-    @endrole
+{{--    @endrole--}}
+
+    <li class="nav-item">
+        <a href="{{route('enhancement.index', $customer->id)}}" class="nav-link  @if(request()->routeIs('enhancement.*')) active @endif  ">Enhancements</a>
+    </li>
 
 
 </ul>
