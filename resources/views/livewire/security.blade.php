@@ -84,7 +84,7 @@
         </div>
         <div class="col-md-3 mb-3">
             <label for="date_of_issuance"><strong>Date Of Issuance</strong></label>
-            <input type="date" min="{{date('Y-m-d')}}" class="form-control" id="date_of_issuance" name="date_of_issuance">
+            <input type="date" class="form-control" id="date_of_issuance" name="date_of_issuance">
         </div>
         <div class="col-md-3 mb-3">
             <label for="issuing_office"><strong>Issuing Office</strong></label>

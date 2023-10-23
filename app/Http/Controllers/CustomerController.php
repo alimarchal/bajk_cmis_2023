@@ -344,11 +344,12 @@ class CustomerController extends Controller
         $per_page_count = $request->input('per_page_count', 10);
 
         if (Auth::user()->hasRole(['Credit Officer', 'Branch Manager'])) {
-            $customers = QueryBuilder::for(Customer::with('branch', 'product', 'product_type')->where('branch_id', \auth()->user()->branch_id))
+            $customers = QueryBuilder::for(Customer::with('branch', 'product', 'product_type','guarantee')->where('branch_id', \auth()->user()->branch_id))
                 ->allowedFilters([
                     AllowedFilter::scope('starts_before'),
                     AllowedFilter::scope('search_string'),
                     AllowedFilter::exact('customer_cnic'),
+                    AllowedFilter::exact('guarantee.cnic'),
                     AllowedFilter::exact('branch_id'),
                     AllowedFilter::exact('product_id'),
                     AllowedFilter::exact('product_type_id'),
