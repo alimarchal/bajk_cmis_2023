@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CustomerExport;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Branch;
@@ -23,6 +24,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class CustomerController extends Controller
 {
@@ -242,12 +245,12 @@ class CustomerController extends Controller
             $consumer_financing_outstanding = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '1')->sum('principle_amount');
             $commercial_sme_financing = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '2')->sum('principle_amount');
             $micro_financing = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '3')->sum('principle_amount');
-            $agriculture_financing = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '5')->sum('principle_amount');
+            $agriculture_financing = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '4')->sum('principle_amount');
 
             $consumer_financing_outstanding_noa = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '1')->count();
             $commercial_sme_financing_noa = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '2')->count();
             $micro_financing_noa = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '3')->count();
-            $agriculture_financing_noa = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '5')->count();
+            $agriculture_financing_noa = Customer::where('branch_id', \auth()->user()->branch_id)->where('product_id', '4')->count();
 
             $npl_accounts = Customer::where('branch_id', \auth()->user()->branch_id)->where('customers.status', '=', 1)->whereNotIn('customers.customer_status', ['Regular', 'Irregular'])->count();
             $npl_accounts_amount = Customer::where('branch_id', \auth()->user()->branch_id)->where('customers.status', '=', 1)->whereNotIn('customers.customer_status', ['Regular', 'Irregular'])->sum('principle_amount');
@@ -268,12 +271,12 @@ class CustomerController extends Controller
             $consumer_financing_outstanding = Customer::whereIn('branch_id', $branches)->where('product_id', '1')->sum('principle_amount');
             $commercial_sme_financing = Customer::whereIn('branch_id', $branches)->where('product_id', '2')->sum('principle_amount');
             $micro_financing = Customer::whereIn('branch_id', $branches)->where('product_id', '3')->sum('principle_amount');
-            $agriculture_financing = Customer::whereIn('branch_id', $branches)->where('product_id', '5')->sum('principle_amount');
+            $agriculture_financing = Customer::whereIn('branch_id', $branches)->where('product_id', '4')->sum('principle_amount');
 
             $consumer_financing_outstanding_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '1')->count();
             $commercial_sme_financing_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '2')->count();
             $micro_financing_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '3')->count();
-            $agriculture_financing_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '5')->count();
+            $agriculture_financing_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '4')->count();
 
 
             $npl_accounts = Customer::whereIn('branch_id', $branches)->where('customers.status', '=', 1)->whereNotIn('customers.customer_status', ['Regular', 'Irregular'])->count();
@@ -294,12 +297,12 @@ class CustomerController extends Controller
             $consumer_financing_outstanding = Customer::whereIn('branch_id', $branches)->where('product_id', '1')->sum('principle_amount');
             $commercial_sme_financing = Customer::whereIn('branch_id', $branches)->where('product_id', '2')->sum('principle_amount');
             $micro_financing = Customer::whereIn('branch_id', $branches)->where('product_id', '3')->sum('principle_amount');
-            $agriculture_financing = Customer::whereIn('branch_id', $branches)->where('product_id', '5')->sum('principle_amount');
+            $agriculture_financing = Customer::whereIn('branch_id', $branches)->where('product_id', '4')->sum('principle_amount');
 
             $consumer_financing_outstanding_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '1')->count();
             $commercial_sme_financing_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '2')->count();
             $micro_financing_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '3')->count();
-            $agriculture_financing_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '5')->count();
+            $agriculture_financing_noa = Customer::whereIn('branch_id', $branches)->where('product_id', '4')->count();
 
             $npl_accounts = Customer::whereIn('branch_id', $branches)->where('customers.status', '=', 1)->whereNotIn('customers.customer_status', ['Regular', 'Irregular'])->count();
             $npl_accounts_amount = Customer::whereIn('branch_id', $branches)->where('customers.status', '=', 1)->whereNotIn('customers.customer_status', ['Regular', 'Irregular'])->sum('principle_amount');
@@ -312,12 +315,12 @@ class CustomerController extends Controller
             $consumer_financing_outstanding = Customer::where('product_id', '1')->sum('principle_amount');
             $commercial_sme_financing = Customer::where('product_id', '2')->sum('principle_amount');
             $micro_financing = Customer::where('product_id', '3')->sum('principle_amount');
-            $agriculture_financing = Customer::where('product_id', '5')->sum('principle_amount');
+            $agriculture_financing = Customer::where('product_id', '4')->sum('principle_amount');
 
             $consumer_financing_outstanding_noa = Customer::where('product_id', '1')->count();
             $commercial_sme_financing_noa = Customer::where('product_id', '2')->count();
             $micro_financing_noa = Customer::where('product_id', '3')->count();
-            $agriculture_financing_noa = Customer::where('product_id', '5')->count();
+            $agriculture_financing_noa = Customer::where('product_id', '4')->count();
 
             $npl_accounts = Customer::where('customers.status', '=', 1)->whereNotIn('customers.customer_status', ['Regular', 'Irregular'])->count();
             $npl_accounts_amount = Customer::where('customers.status', '=', 1)->whereNotIn('customers.customer_status', ['Regular', 'Irregular'])->sum('principle_amount');
@@ -430,6 +433,12 @@ class CustomerController extends Controller
         }
 
         return view('customer.index', compact('customers'));
+    }
+
+    public function export(Request $request)
+    {
+        $filename = 'customer_data.xlsx'; // Set your desired filename
+        return Excel::download(new CustomerExport, $filename);
     }
 
     /**

@@ -201,7 +201,24 @@
             <div class="col-md-12 p-3">
                 <a href="javascript:;" class="btn btn-primary showModule float-right" data-target="filters">
                     Show Filters</a>
-                {{--                <input type="submit" name="search" value="Export" class="btn btn-success float-right mr-2">--}}
+
+                <a href="{{ route('customer.export', [
+                            'filter' => [
+                                'search_string' => request()->input('filter.search_string'),
+                                'customer_cnic' => request()->input('filter.customer_cnic'),
+                                'guarantee.cnic' => request()->input('filter.guarantee.cnic'),
+                                'account_cd_saving' => request()->input('filter.account_cd_saving'),
+                                'manual_account' => request()->input('filter.manual_account'),
+                                'product_type_id' => request()->input('filter.product_type_id'),
+                                'gender' => request()->input('filter.gender'),
+                                'status' => request()->input('filter.status'),
+                                'customer_status' => request()->input('filter.customer_status'),
+                                'branch_id' => request()->input('filter.branch_id'),
+                                'starts_before' => request()->input('filter.starts_before'),
+                            ]]) }}" class="btn btn-primary">
+                    Download
+                </a>
+
             </div>
         </div>
     </form>
