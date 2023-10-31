@@ -68,11 +68,11 @@
 
 
                 <div class="col-md-3">
-                    <label for="zone"><strong>Zone</strong></label>
-                    <select class="form-control select2bs4" id="zone" style="width: 100%;" name="zone">
+                    <label for="zone"><strong>Region</strong></label>
+                    <select class="form-control select2bs4" id="region" style="width: 100%;" name="region">
                         <option value="">None</option>
-                        @foreach(\App\Models\Branch::groupBy('zone')->get() as $branch)
-                            <option value="{{$branch->zone}}">{{$branch->zone}}</option>
+                        @foreach(\App\Models\Branch::groupBy('region')->get() as $branch)
+                            <option value="{{$branch->region}}">{{$branch->region}}</option>
                         @endforeach
 
                     </select>

@@ -29,10 +29,10 @@ class ReportController extends Controller
         $month_date = null;
         $zone_data = null;
 
-        if ($request->input('zone')) {
-            $zone_data = $request->zone;
+        if ($request->input('region')) {
+            $zone_data = $request->region;
         } else {
-            $zone_data = 'Muzaffarabad';
+            $zone_data = 'MUZAFFARABAD';
         }
 
         if ($request->input('month')) {
@@ -51,9 +51,9 @@ class ReportController extends Controller
         $previous_month = Carbon::parse($month_date)->subMonth();
         $last_year = Carbon::parse($month_date)->startOfYear()->subMonth();
 
-        $branches = Branch::where('zone', $zone_data)->get();
+        $branches = Branch::where('region', $zone_data)->get();
 
-        $branches_array = Branch::where('zone', $zone_data)->pluck('id')->toArray();
+        $branches_array = Branch::where('region', $zone_data)->pluck('id')->toArray();
 
         if ($month_date->format('Y-m') == Carbon::now()->format('Y-m')) {
             $branch_wise_principal_outstanding = DB::table('customers')
@@ -154,10 +154,10 @@ class ReportController extends Controller
         $month_date = null;
         $zone_data = null;
 
-        if ($request->input('zone')) {
+        if ($request->input('region')) {
             $zone_data = $request->zone;
         } else {
-            $zone_data = 'Muzaffarabad';
+            $zone_data = 'MUZAFFARABAD';
         }
 
         if ($request->input('month')) {
@@ -173,15 +173,11 @@ class ReportController extends Controller
 
         $branches = Branch::all();
 
-        $branches_array = Branch::where('zone', $zone_data)->pluck('id')->toArray();
+        $branches_array = Branch::where('region', $zone_data)->pluck('id')->toArray();
 
         $branch_wise_principal_outstanding_target = null;
         $principal_outstanding_previous_month = null;
         $principal_outstanding_last_year = null;
-
-
-
-
 
 
         if ($month_date->format('Y-m') == Carbon::now()->format('Y-m')) {
@@ -189,7 +185,7 @@ class ReportController extends Controller
             $branch_wise_principal_outstanding = DB::table('customers')
                 ->select('customers.branch_id', 'branches.id', 'branches.region', 'branches.zone', DB::raw("SUM(customers.principle_amount) as principle_outstanding"))
                 ->join('branches', 'customers.branch_id', '=', 'branches.id')
-                ->groupBy('branches.zone')
+                ->groupBy('branches.region')
                 ->get();
 
             $new_date = Carbon::parse($month);
@@ -197,7 +193,7 @@ class ReportController extends Controller
                 ->select('branch_targets.branch_id', 'branches.id', 'branches.region', 'branches.zone', DB::raw("SUM(branch_targets.amount) as amount"))
                 ->join('branches', 'branch_targets.branch_id', '=', 'branches.id')
                 ->whereBetween('branch_targets.year', [$new_date->startOfYear()->format('Y-m-d'), $new_date->endOfYear()->format('Y-m-d')])
-                ->groupBy('branches.zone')
+                ->groupBy('branches.region')
                 ->get();
 
         } else {
@@ -205,7 +201,7 @@ class ReportController extends Controller
                 ->select('branch_outstandings.branch_id', 'branch_outstandings.id', 'branches.region', 'branches.zone', DB::raw("SUM(branch_outstandings.principle_outstanding) as branch_outstanding_balance"))
                 ->join('branches', 'branch_outstandings.branch_id', '=', 'branches.id')
                 ->whereBetween('branch_outstandings.created_at', [$month->startOfMonth()->format('Y-m-d') . ' 00:00:00.000000', $month->endOfMonth()->format('Y-m-d') . ' 23:59:59.000000'])
-                ->groupBy('branches.zone')
+                ->groupBy('branches.region')
                 ->get();
 
 
@@ -214,7 +210,7 @@ class ReportController extends Controller
                 ->select('branch_targets.branch_id', 'branches.id', 'branches.region', 'branches.zone', DB::raw("SUM(branch_targets.amount) as amount"))
                 ->join('branches', 'branch_targets.branch_id', '=', 'branches.id')
                 ->whereBetween('branch_targets.year', [$new_date->startOfYear()->format('Y-m-d'), $new_date->endOfYear()->format('Y-m-d')])
-                ->groupBy('branches.zone')
+                ->groupBy('branches.region')
                 ->get();
         }
 
@@ -223,7 +219,7 @@ class ReportController extends Controller
             ->select('branch_outstandings.branch_id', 'branch_outstandings.id', 'branches.region', 'branches.zone', DB::raw("SUM(branch_outstandings.principle_outstanding) as branch_outstanding_balance"))
             ->join('branches', 'branch_outstandings.branch_id', '=', 'branches.id')
             ->whereBetween('branch_outstandings.created_at', [$previous_month->startOfMonth()->format('Y-m-d') . ' 00:00:00.000000', $previous_month->endOfMonth()->format('Y-m-d') . ' 23:59:59.000000'])
-            ->groupBy('branches.zone')
+            ->groupBy('branches.region')
             ->get();
 
 
@@ -231,7 +227,7 @@ class ReportController extends Controller
             ->select('branch_outstandings.branch_id', 'branch_outstandings.id', 'branches.region', 'branches.zone', DB::raw("SUM(branch_outstandings.principle_outstanding) as branch_outstanding_balance"))
             ->join('branches', 'branch_outstandings.branch_id', '=', 'branches.id')
             ->whereBetween('branch_outstandings.created_at', [$last_year->startOfMonth()->format('Y-m-d') . ' 00:00:00.000000', $last_year->endOfMonth()->format('Y-m-d') . ' 23:59:59.000000'])
-            ->groupBy('branches.zone')
+            ->groupBy('branches.region')
             ->get();
 
 
@@ -239,47 +235,47 @@ class ReportController extends Controller
         $data_last_year = [];
         $data_total = [$month->format('F') => 0.00, $previous_month->format('F') => 0.00, $last_year->format('F') => 0.00];
 
+
         foreach ($branches as $branch) {
-            $data[$branch->zone] = [$month->format('F') . ' - Target' => 0.00, $month->format('F') => 0.00, $previous_month->format('F') => 0.00, $last_year->format('F') => 0.00];
+            $data[$branch->region] = [$month->format('F') . ' - Target' => 0.00, $month->format('F') => 0.00, $previous_month->format('F') => 0.00, $last_year->format('F') => 0.00];
         }
+
+
 
         if ($month_date->format('Y-m') == Carbon::now()->format('Y-m')) {
             foreach ($branch_wise_principal_outstanding as $bo) {
-                $data[$bo->zone][$month->format('F')] = $bo->principle_outstanding;
+                $data[$bo->region][$month->format('F')] = $bo->principle_outstanding;
                 $data_total[$month->format('F')] = $data_total[$month->format('F')] + $bo->principle_outstanding;
             }
 
             foreach ($branch_wise_principal_outstanding_target as $bo) {
-                $data[$bo->zone][$month->format('F') . ' - Target'] = ($bo->amount / 12);
+                $data[$bo->region][$month->format('F') . ' - Target'] = ($bo->amount / 12);
             }
 
 
         } else {
             foreach ($branch_wise_principal_outstanding as $bo) {
-                $data[$bo->zone][$month->format('F')] = $bo->branch_outstanding_balance;
+                $data[$bo->region][$month->format('F')] = $bo->branch_outstanding_balance;
                 $data_total[$month->format('F')] = $data_total[$month->format('F')] + $bo->branch_outstanding_balance;
             }
 
             foreach ($branch_wise_principal_outstanding_target as $bo) {
-                $data[$bo->zone][$month->format('F') . ' - Target'] = ($bo->amount / 12);
+                $data[$bo->region][$month->format('F') . ' - Target'] = ($bo->amount / 12);
             }
 
         }
 
 
         foreach ($principal_outstanding_previous_month as $bo) {
-            $data[$bo->zone][$previous_month->format('F')] = $bo->branch_outstanding_balance;
+            $data[$bo->region][$previous_month->format('F')] = $bo->branch_outstanding_balance;
             $data_total[$previous_month->format('F')] = $data_total[$previous_month->format('F')] + $bo->branch_outstanding_balance;
         }
 
 
         foreach ($principal_outstanding_last_year as $bo) {
-            $data[$bo->zone][$last_year->format('F')] = $bo->branch_outstanding_balance;
+            $data[$bo->region][$last_year->format('F')] = $bo->branch_outstanding_balance;
             $data_total[$last_year->format('F')] = $data_total[$last_year->format('F')] + $bo->branch_outstanding_balance;
         }
-
-
-//        dd($data);
 
         return view('reports.overallBankPosition', compact('data', 'data_total', 'last_year', 'previous_month', 'month', 'zone_data'));
     }
@@ -315,7 +311,7 @@ class ReportController extends Controller
                 ->select('customers.branch_id', 'branches.id', 'branches.region', 'branches.zone', DB::raw("SUM(customers.principle_amount) as principle_outstanding"))
                 ->join('branches', 'customers.branch_id', '=', 'branches.id')
                 ->where('customers.product_type_id', $product_type_id)
-                ->groupBy('branches.zone')
+                ->groupBy('branches.region')
                 ->get();
 
 
@@ -327,7 +323,7 @@ class ReportController extends Controller
                 ->join('branches', 'product_wise_monthlies.branch_id', '=', 'branches.id')
                 ->where('product_wise_monthlies.product_type_id', $product_type_id)
                 ->whereBetween('product_wise_monthlies.created_at', [$month->startOfMonth()->format('Y-m-d') . ' 00:00:00.000000', $month->endOfMonth()->format('Y-m-d') . ' 23:59:59.000000'])
-                ->groupBy('branches.zone')
+                ->groupBy('branches.region')
                 ->get();
 
         }
@@ -338,7 +334,7 @@ class ReportController extends Controller
             ->join('branches', 'product_wise_monthlies.branch_id', '=', 'branches.id')
             ->where('product_wise_monthlies.product_type_id', $product_type_id)
             ->whereBetween('product_wise_monthlies.created_at', [$previous_month->startOfMonth()->format('Y-m-d') . ' 00:00:00.000000', $previous_month->endOfMonth()->format('Y-m-d') . ' 23:59:59.000000'])
-            ->groupBy('branches.zone')
+            ->groupBy('branches.region')
             ->get();
 
 
@@ -347,7 +343,7 @@ class ReportController extends Controller
             ->join('branches', 'product_wise_monthlies.branch_id', '=', 'branches.id')
             ->where('product_wise_monthlies.product_type_id', $product_type_id)
             ->whereBetween('product_wise_monthlies.created_at', [$last_year->startOfMonth()->format('Y-m-d') . ' 00:00:00.000000', $last_year->endOfMonth()->format('Y-m-d') . ' 23:59:59.000000'])
-            ->groupBy('branches.zone')
+            ->groupBy('branches.region')
             ->get();
 
 
@@ -356,19 +352,19 @@ class ReportController extends Controller
         $data_total = [$month->format('F') => 0.00, $previous_month->format('F') => 0.00, $last_year->format('F') => 0.00];
 
         foreach ($branches as $branch) {
-            $data[$branch->zone] = [$month->format('F') => 0.00, $previous_month->format('F') => 0.00, $last_year->format('F') => 0.00];
+            $data[$branch->region] = [$month->format('F') => 0.00, $previous_month->format('F') => 0.00, $last_year->format('F') => 0.00];
         }
 
 
         if ($month_date->format('Y-m') == Carbon::now()->format('Y-m')) {
             foreach ($branch_wise_principal_outstanding as $bo) {
-                $data[$bo->zone][$month->format('F')] = $bo->principle_outstanding;
+                $data[$bo->region][$month->format('F')] = $bo->principle_outstanding;
                 $data_total[$month->format('F')] = $data_total[$month->format('F')] + $bo->principle_outstanding;
             }
 
         } else {
             foreach ($branch_wise_principal_outstanding as $bo) {
-                $data[$bo->zone][$month->format('F')] = $bo->branch_outstanding_balance;
+                $data[$bo->region][$month->format('F')] = $bo->branch_outstanding_balance;
                 $data_total[$month->format('F')] = $data_total[$month->format('F')] + $bo->branch_outstanding_balance;
             }
         }
@@ -572,10 +568,10 @@ class ReportController extends Controller
         $zone_data = null;
         $product_type_id = null;
 
-        if ($request->input('zone')) {
-            $zone_data = $request->zone;
+        if ($request->input('region')) {
+            $zone_data = $request->region;
         } else {
-            $zone_data = 'Muzaffarabad';
+            $zone_data = 'MUZAFFARABAD';
         }
 
 
@@ -606,14 +602,14 @@ class ReportController extends Controller
         $data_total = [];
 
         foreach ($branches as $branch) {
-            $data[$branch->zone][$branch->name] = [$month->format('F') => ['amount' => 0.00], $previous_month->format('F') => ['amount' => 0.00], $last_year->format('F') => ['amount' => 0.00]];
-            $data_total[$branch->region][$branch->zone] = [$month->format('F') => ['amount' => 0.00], $previous_month->format('F') => ['amount' => 0.00], $last_year->format('F') => ['amount' => 0.00]];
+            $data[$branch->region][$branch->name] = [$month->format('F') => ['amount' => 0.00], $previous_month->format('F') => ['amount' => 0.00], $last_year->format('F') => ['amount' => 0.00]];
+            $data_total[$branch->region][$branch->region] = [$month->format('F') => ['amount' => 0.00], $previous_month->format('F') => ['amount' => 0.00], $last_year->format('F') => ['amount' => 0.00]];
         }
 
         if ($month_date->format('Y-m') == Carbon::now()->format('Y-m')) {
 
             $product_wise_principal_outstanding = DB::table('customers')
-                ->select('branches.zone', 'branches.name', 'customers.branch_id', DB::raw("SUM(principle_amount) as principle_amount"))
+                ->select('branches.zone', 'branches.region', 'branches.name', 'customers.branch_id', DB::raw("SUM(principle_amount) as principle_amount"))
                 ->join('branches', 'customers.branch_id', '=', 'branches.id')
                 ->groupBy('customers.branch_id')
                 ->where('customers.product_type_id', $product_type_id)
@@ -622,7 +618,7 @@ class ReportController extends Controller
 
         } else {
             $product_wise_principal_outstanding = DB::table('product_wise_monthlies')
-                ->select('branches.zone', 'branches.name', 'product_wise_monthlies.branch_id', DB::raw("SUM(product_wise_monthlies.principle_outstanding) as principle_amount"))
+                ->select('branches.zone', 'branches.region', 'branches.name', 'product_wise_monthlies.branch_id', DB::raw("SUM(product_wise_monthlies.principle_outstanding) as principle_amount"))
                 ->join('branches', 'product_wise_monthlies.branch_id', '=', 'branches.id')
                 ->groupBy('product_wise_monthlies.branch_id')
                 ->where('product_wise_monthlies.product_type_id', $product_type_id)
@@ -633,7 +629,7 @@ class ReportController extends Controller
         }
 
         $principal_outstanding_previous_month = DB::table('product_wise_monthlies')
-            ->select('branches.zone', 'branches.name', 'product_wise_monthlies.branch_id', DB::raw("SUM(product_wise_monthlies.principle_outstanding) as principle_amount"))
+            ->select('branches.zone', 'branches.region',  'branches.name', 'product_wise_monthlies.branch_id', DB::raw("SUM(product_wise_monthlies.principle_outstanding) as principle_amount"))
             ->join('branches', 'product_wise_monthlies.branch_id', '=', 'branches.id')
             ->groupBy('product_wise_monthlies.branch_id')
             ->where('product_wise_monthlies.product_type_id', $product_type_id)
@@ -643,7 +639,7 @@ class ReportController extends Controller
 
 
         $principal_outstanding_last_year = DB::table('product_wise_monthlies')
-            ->select('branches.zone', 'branches.name', 'product_wise_monthlies.branch_id', DB::raw("SUM(product_wise_monthlies.principle_outstanding) as principle_amount"))
+            ->select('branches.zone', 'branches.region',  'branches.name', 'product_wise_monthlies.branch_id', DB::raw("SUM(product_wise_monthlies.principle_outstanding) as principle_amount"))
             ->join('branches', 'product_wise_monthlies.branch_id', '=', 'branches.id')
             ->groupBy('product_wise_monthlies.branch_id')
             ->where('product_wise_monthlies.product_type_id', $product_type_id)
@@ -654,21 +650,22 @@ class ReportController extends Controller
 
         if ($month_date->format('Y-m') == Carbon::now()->format('Y-m')) {
             foreach ($product_wise_principal_outstanding as $bo) {
-                $data[$bo->zone][$bo->name][$month->format('F')]['amount'] = $bo->principle_amount;
+                $data[$bo->region][$bo->name][$month->format('F')]['amount'] = $bo->principle_amount;
             }
         } else {
             foreach ($product_wise_principal_outstanding as $bo) {
-                $data[$bo->zone][$bo->name][$month->format('F')]['amount'] = $bo->principle_amount;
+                $data[$bo->region][$bo->name][$month->format('F')]['amount'] = $bo->principle_amount;
             }
         }
 
         foreach ($principal_outstanding_previous_month as $bo) {
-            $data[$bo->zone][$bo->name][$previous_month->format('F')]['amount'] = $bo->principle_amount;
+            $data[$bo->region][$bo->name][$previous_month->format('F')]['amount'] = $bo->principle_amount;
         }
 
         foreach ($principal_outstanding_last_year as $bo) {
-            $data[$bo->zone][$bo->name][$last_year->format('F')]['amount'] = $bo->principle_amount;
+            $data[$bo->region][$bo->name][$last_year->format('F')]['amount'] = $bo->principle_amount;
         }
+
         return view('reports.branchWisePositionLoans', compact('data', 'data_total', 'last_year', 'month', 'previous_month', 'product_type_id'));
     }
 

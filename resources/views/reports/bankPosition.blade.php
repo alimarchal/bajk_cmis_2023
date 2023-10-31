@@ -155,7 +155,6 @@
         </thead>
         <tbody>
         @foreach($data as $key => $value)
-            @if($key == "Muzaffarabad" || $key == "Rawalakot")
                 <tr>
                     <td class="text-center"><strong>{{\App\Models\Branch::where('zone',$key)->count()}}</strong></td>
                     <td>{{$key}}</td>
@@ -197,23 +196,22 @@
                     </td>
 
                 </tr>
-            @endif
         @endforeach
         <tr>
-            <td class="align-middle text-center" colspan="2"><strong>North Region Total</strong></td>
+            <td class="align-middle text-center" colspan="2"><strong>Regions Total</strong></td>
             <td class="align-middle text-right">
                 <strong>
-                    {{number_format($data['Muzaffarabad'][$last_year->format('F')] + $data['Rawalakot'][$last_year->format('F')],2)}}
+                    {{number_format($data['MUZAFFARABAD'][$last_year->format('F')] + $data['RAWALAKOT'][$last_year->format('F')] + $data['MIRPUR'][$last_year->format('F')] + $data['KOTLI'][$last_year->format('F')],2)}}
                 </strong>
             </td>
             <td class="align-middle text-right">
                 <strong>
-                    {{number_format($data['Muzaffarabad'][$previous_month->format('F')] + $data['Rawalakot'][$previous_month->format('F')],2)}}
+                    {{number_format($data['MUZAFFARABAD'][$previous_month->format('F')] + $data['RAWALAKOT'][$previous_month->format('F')] + $data['MIRPUR'][$previous_month->format('F')] + $data['KOTLI'][$previous_month->format('F')],2)}}
                 </strong>
             </td>
             <td class="align-middle text-right">
                 <strong>
-                    {{number_format($data['Muzaffarabad'][$month->format('F')] + $data['Rawalakot'][$month->format('F')],2)}}
+                    {{number_format($data['MUZAFFARABAD'][$month->format('F')] + $data['RAWALAKOT'][$month->format('F')] + $data['MIRPUR'][$month->format('F')] + $data['KOTLI'][$month->format('F')],2)}}
                 </strong>
             </td>
 
@@ -255,191 +253,6 @@
 
 
 
-    <br>
-
-
-    <table class="table table-bordered  ">
-        <thead>
-        <tr>
-            <th scope="col" class="align-middle text-center" rowspan="3" width="5%">No of Branches</th>
-            <th scope="col" class="align-middle text-center" rowspan="3" width="20%">Region / Zone</th>
-            <th scope="col" class="align-middle text-center" colspan="3">Advances</th>
-            <th scope="col" class="align-middle text-center" colspan="4">Variance Analysis</th>
-
-        </tr>
-        <tr>
-            <th scope="col" class="align-middle text-center" width="15%">Base:<br> {{$last_year->format('F Y')}}</th>
-            <th scope="col" class="align-middle text-center" width="15%">{{$previous_month->format('F Y')}}</th>
-            <th scope="col" class="align-middle text-center" width="15%">Actual<br>{{$month->format('F Y')}}</th>
-
-            <th scope="col" class="align-middle text-center" colspan="2" width="15%">
-                {{$month->format('F Y')}} <br>vs<br> Base {{$last_year->format('F Y')}}
-            </th>
-
-            <th scope="col" class="align-middle text-center" colspan="2" width="15%">
-                {{$last_year->format('F Y')}}<br> vs <br> {{$previous_month->format('F Y')}}
-            </th>
-        </tr>
-
-        <tr>
-            <th scope="col" class="align-middle text-center">Amount</th>
-            <th scope="col" class="align-middle text-center">Amount</th>
-            <th scope="col" class="align-middle text-center">Amount</th>
-            <th scope="col" class="align-middle text-center">Amount</th>
-            <th scope="col" class="align-middle text-center">%</th>
-            <th scope="col" class="align-middle text-center">Amount</th>
-            <th scope="col" class="align-middle text-center">%</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach($data as $key => $value)
-            @if($key == "Mirpur" || $key == "Kotli")
-                <tr>
-                    <td class="text-center"><strong>{{\App\Models\Branch::where('zone',$key)->count()}}</strong></td>
-                    <td>{{$key}}</td>
-                    <td class="text-right">{{number_format($value[$last_year->format('F')],2)}}</td>
-                    <td class="text-right">{{number_format($value[$previous_month->format('F')],2)}}</td>
-                    <td class="text-right">{{number_format($value[$month->format('F')],2)}}</td>
-
-
-                    <td class="text-right">{{number_format($value[$month->format('F')] - $value[$last_year->format('F')],2)}}
-                        @php
-                            $first_amount_2 = $first_amount_2 + ($value[$month->format('F')] - $value[$last_year->format('F')]);
-                        @endphp
-                    </td>
-                    <td class="text-right">
-                        @if($value[$month->format('F')] > 0 && $value[$last_year->format('F')] > 0)
-                            {{ number_format($value[$month->format('F')] / $value[$last_year->format('F')] * 100, 2) }}
-                            @php
-                                $first_percentag_2e = $first_percentage_2 + ($value[$month->format('F')] / $value[$last_year->format('F')] * 100);
-                            @endphp
-
-                        @else
-                            0.00
-                        @endif
-                    </td>
-
-
-                    <td class="text-right">{{number_format($value[$last_year->format('F')] - $value[$previous_month->format('F')],2)}}
-                        @php
-                            $second_amount_2 = $second_amount_2 + ($value[$last_year->format('F')] - $value[$previous_month->format('F')]);
-                        @endphp
-
-                    </td>
-                    <td class="text-right">
-                        @if($value[$last_year->format('F')] > 0 && $value[$previous_month->format('F')] > 0)
-                            {{ number_format($value[$last_year->format('F')] / $value[$previous_month->format('F')] * 100, 2) }}
-                            @php
-                                $second_percentage_2 = $second_percentage_2 + ($value[$last_year->format('F')] / $value[$previous_month->format('F')] * 100);
-                            @endphp
-                        @else
-                            0.00
-                        @endif
-                    </td>
-                </tr>
-            @endif
-        @endforeach
-        <tr>
-            <td class="align-middle text-center" colspan="2"><strong>South Region Total</strong></td>
-            <td class="align-middle text-right">
-                <strong>
-                    {{number_format($data['Mirpur'][$last_year->format('F')] + $data['Kotli'][$last_year->format('F')],2)}}
-                </strong>
-            </td>
-            <td class="align-middle text-right">
-                <strong>
-                    {{number_format($data['Mirpur'][$previous_month->format('F')] + $data['Kotli'][$previous_month->format('F')],2)}}
-                </strong>
-            </td>
-            <td class="align-middle text-right">
-                <strong>
-                    {{number_format($data['Mirpur'][$month->format('F')] + $data['Kotli'][$month->format('F')],2)}}
-                </strong>
-            </td>
-
-
-            <td class="align-middle text-right">
-                <strong>
-                    {{number_format($first_amount_2,2)}}
-                </strong>
-            </td>
-
-
-            <td class="align-middle text-right">
-                <strong>
-                    {{number_format($first_percentage_2,2)}}%
-                </strong>
-            </td>
-
-
-
-            <td class="align-middle text-right">
-                <strong>
-                    {{number_format($second_amount_2,2)}}
-                </strong>
-            </td>
-
-
-
-            <td class="align-middle text-right">
-                <strong>
-                    {{number_format($second_percentage_2,2)}}%
-                </strong>
-            </td>
-        </tr>
-
-        <tr>
-            <td class="align-middle text-center" colspan="2"><strong>Bank Performance</strong></td>
-            <td class="align-middle text-right">
-                <strong>
-                    {{number_format($data_total[$last_year->format('F')],2)}}
-                </strong>
-            </td>
-            <td class="align-middle text-right">
-                <strong>
-                    {{number_format($data_total[$previous_month->format('F')],2)}}
-                </strong>
-            </td>
-            <td class="align-middle text-right">
-                <strong>
-                    {{number_format($data_total[$month->format('F')],2)}}
-                </strong>
-            </td>
-
-
-            <td class="align-middle text-right">
-                <strong>
-                    {{number_format($first_amount_2 + $first_amount,2)}}
-                </strong>
-            </td>
-
-
-            <td class="align-middle text-right">
-                <strong>
-                    {{number_format($first_percentage_2 + $first_percentage,2)}}%
-                </strong>
-            </td>
-
-
-
-            <td class="align-middle text-right">
-                <strong>
-                    {{number_format($second_amount_2 + $second_amount,2)}}
-                </strong>
-            </td>
-
-
-
-            <td class="align-middle text-right">
-                <strong>
-                    {{number_format($second_percentage_2 + $second_percentage,2)}}%
-                </strong>
-            </td>
-
-
-        </tr>
-        </tbody>
-    </table>
 
 @endsection
 

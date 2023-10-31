@@ -131,30 +131,40 @@
             <th scope="col" class="align-middle text-center">%</th>
         </thead>
         <tbody>
+
+
+        @php
+            $kotli_first_month = 0;
+            $kotli_second_month = 0;
+            $kotli_third_month = 0;
+
+            $muzaffarabad_first_month = 0;
+            $muzaffarabad_second_month = 0;
+            $muzaffarabad_third_month = 0;
+
+            $rawalakot_first_month = 0;
+            $rawalakot_second_month = 0;
+            $rawalakot_third_month = 0;
+
+            $mirpur_first_month = 0;
+            $mirpur_second_month = 0;
+            $mirpur_third_month = 0;
+
+            $kotli_first_month = 0;
+            $kotli_second_month = 0;
+            $kotli_third_month = 0;
+        @endphp
+
         @foreach($data as $key => $value)
 
-            @if($key == "Muzaffarabad")
+            @if($key == "MUZAFFARABAD")
                 <tr>
                     <td colspan="9"><strong>{{$key}}</strong></td>
                 </tr>
                 @php
-                    $muzaffarabad_first_month = 0;
-                    $muzaffarabad_second_month = 0;
-                    $muzaffarabad_third_month = 0;
 
-                    $rawalakot_first_month = 0;
-                    $rawalakot_second_month = 0;
-                    $rawalakot_third_month = 0;
 
-                    $mirpur_first_month = 0;
-                    $mirpur_second_month = 0;
-                    $mirpur_third_month = 0;
-
-                    $kotli_first_month = 0;
-                    $kotli_second_month = 0;
-                    $kotli_third_month = 0;
-
-                    $i = 1; $total_count = count($data['Muzaffarabad']);
+                    $i = 1; $total_count = count($data['MUZAFFARABAD']);
                     $first_month = 0;
                     $second_month = 0;
                     $third_month = 0;
@@ -200,12 +210,12 @@
 
 
 
-            @if($key == "Rawalakot")
+            @if($key == "RAWALAKOT")
                 <tr>
                     <td colspan="9"><strong>{{$key}}</strong></td>
                 </tr>
                 @php
-                    $i = 1; $total_count = count($data['Rawalakot']);
+                    $i = 1; $total_count = count($data['RAWALAKOT']);
                     $first_month = 0;
                     $second_month = 0;
                     $third_month = 0;
@@ -246,11 +256,22 @@
                         <td>0%</td>
                     </tr>
 
+{{--                    <tr class="font-weight-bold text-right">--}}
+{{--                        <td colspan="2" class="text-left">North Total</td>--}}
+{{--                        <td>{{number_format($muzaffarabad_third_month+ $rawalakot_third_month,2)}}</td>--}}
+{{--                        <td>{{number_format($muzaffarabad_second_month+ $rawalakot_second_month,2)}}</td>--}}
+{{--                        <td>{{number_format($muzaffarabad_first_month+ $rawalakot_first_month,2)}}</td>--}}
+{{--                        <td>0</td>--}}
+{{--                        <td>0%</td>--}}
+{{--                        <td>0</td>--}}
+{{--                        <td>0%</td>--}}
+{{--                    </tr>--}}
+
                     <tr class="font-weight-bold text-right">
-                        <td colspan="2" class="text-left">North Total</td>
-                        <td>{{number_format($muzaffarabad_third_month+ $rawalakot_third_month,2)}}</td>
-                        <td>{{number_format($muzaffarabad_second_month+ $rawalakot_second_month,2)}}</td>
-                        <td>{{number_format($muzaffarabad_first_month+ $rawalakot_first_month,2)}}</td>
+                        <td colspan="2" class="text-left">Bank Position</td>
+                        <td>{{number_format($kotli_third_month + $mirpur_third_month + $muzaffarabad_third_month + $rawalakot_third_month,2)}}</td>
+                        <td>{{number_format($kotli_second_month + $mirpur_second_month + $muzaffarabad_second_month + $rawalakot_second_month,2)}}</td>
+                        <td>{{number_format($kotli_first_month + $mirpur_first_month + $muzaffarabad_first_month + $rawalakot_first_month,2)}}</td>
                         <td>0</td>
                         <td>0%</td>
                         <td>0</td>
@@ -261,13 +282,13 @@
             @endif
 
 
-            @if($key == "Mirpur")
+            @if($key == "MIRPUR")
                 <tr>
                     <td colspan="9"><strong>{{$key}}</strong></td>
                 </tr>
 
                 @php
-                    $i = 1; $total_count = count($data['Mirpur']);
+                    $i = 1; $total_count = count($data['MIRPUR']);
                     $first_month = 0;
                     $second_month = 0;
                     $third_month = 0;
@@ -291,6 +312,7 @@
                         $second_month = $second_month + $v[$previous_month->format('F')]['amount'];
                         $third_month = $third_month + $v[$last_year->format('F')]['amount'];
 
+
                         $mirpur_first_month = $mirpur_first_month + $v[$month->format('F')]['amount'];
                         $mirpur_second_month = $mirpur_second_month + $v[$previous_month->format('F')]['amount'];
                         $mirpur_third_month = $mirpur_third_month + $v[$last_year->format('F')]['amount'];
@@ -312,13 +334,13 @@
             @endif
 
 
-            @if($key == "Kotli")
+            @if($key == "KOTLI")
                 <tr>
                     <td colspan="9"><strong>{{$key}}</strong></td>
                 </tr>
 
                 @php
-                    $i = 1; $total_count = count($data['Kotli']);
+                    $i = 1; $total_count = count($data['KOTLI']);
                     $first_month = 0;
                     $second_month = 0;
                     $third_month = 0;
@@ -364,26 +386,17 @@
                     </tr>
 
 
-                    <tr class="font-weight-bold text-right">
-                        <td colspan="2" class="text-left">North Total</td>
-                        <td>{{number_format($kotli_third_month+ $mirpur_third_month,2)}}</td>
-                        <td>{{number_format($kotli_second_month+ $mirpur_second_month,2)}}</td>
-                        <td>{{number_format($kotli_first_month+ $mirpur_first_month,2)}}</td>
-                        <td>0</td>
-                        <td>0%</td>
-                        <td>0</td>
-                        <td>0%</td>
-                    </tr>
-                    <tr class="font-weight-bold text-right">
-                        <td colspan="2" class="text-left">Bank Position</td>
-                        <td>{{number_format($kotli_third_month + $mirpur_third_month + $muzaffarabad_third_month + $rawalakot_third_month,2)}}</td>
-                        <td>{{number_format($kotli_second_month + $mirpur_second_month + $muzaffarabad_second_month + $rawalakot_second_month,2)}}</td>
-                        <td>{{number_format($kotli_first_month + $mirpur_first_month + $muzaffarabad_first_month + $rawalakot_first_month,2)}}</td>
-                        <td>0</td>
-                        <td>0%</td>
-                        <td>0</td>
-                        <td>0%</td>
-                    </tr>
+{{--                    <tr class="font-weight-bold text-right">--}}
+{{--                        <td colspan="2" class="text-left">North Total</td>--}}
+{{--                        <td>{{number_format($kotli_third_month+ $mirpur_third_month,2)}}</td>--}}
+{{--                        <td>{{number_format($kotli_second_month+ $mirpur_second_month,2)}}</td>--}}
+{{--                        <td>{{number_format($kotli_first_month+ $mirpur_first_month,2)}}</td>--}}
+{{--                        <td>0</td>--}}
+{{--                        <td>0%</td>--}}
+{{--                        <td>0</td>--}}
+{{--                        <td>0%</td>--}}
+{{--                    </tr>--}}
+
                 @endif
             @endif
 

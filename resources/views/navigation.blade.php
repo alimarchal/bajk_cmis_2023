@@ -185,11 +185,11 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item">
-                                <a href="{{route('report.outstandingAdvancesProductWise')}}" class="nav-link @if(request()->routeIs('report.outstandingAdvancesProductWise')) active @endif">
-                                    <p><span style="font-size: 14px;"> Summary Outstanding Advances Product Wise </span></p>
-                                </a>
-                            </li>
+{{--                            <li class="nav-item">--}}
+{{--                                <a href="{{route('report.outstandingAdvancesProductWise')}}" class="nav-link @if(request()->routeIs('report.outstandingAdvancesProductWise')) active @endif">--}}
+{{--                                    <p><span style="font-size: 14px;"> Summary Outstanding Advances Product Wise </span></p>--}}
+{{--                                </a>--}}
+{{--                            </li>--}}
 
                             <li class="nav-item">
                                 <a href="{{route('report.creditGrowth')}}" class="nav-link @if(request()->routeIs('report.creditGrowth')) active @endif">
