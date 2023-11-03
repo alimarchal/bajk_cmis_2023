@@ -356,6 +356,7 @@ class ReportController extends Controller
         }
 
 
+
         if ($month_date->format('Y-m') == Carbon::now()->format('Y-m')) {
             foreach ($branch_wise_principal_outstanding as $bo) {
                 $data[$bo->region][$month->format('F')] = $bo->principle_outstanding;
@@ -371,18 +372,20 @@ class ReportController extends Controller
 
 
         foreach ($principal_outstanding_previous_month as $bo) {
-            $data[$bo->zone][$previous_month->format('F')] = $bo->branch_outstanding_balance;
+            $data[$bo->region][$previous_month->format('F')] = $bo->branch_outstanding_balance;
             $data_total[$previous_month->format('F')] = $data_total[$previous_month->format('F')] + $bo->branch_outstanding_balance;
         }
 
 
         foreach ($principal_outstanding_last_year as $bo) {
-            $data[$bo->zone][$last_year->format('F')] = $bo->branch_outstanding_balance;
+            $data[$bo->region][$last_year->format('F')] = $bo->branch_outstanding_balance;
             $data_total[$last_year->format('F')] = $data_total[$last_year->format('F')] + $bo->branch_outstanding_balance;
         }
 
+
         return view('reports.bankPosition', compact('data', 'data_total', 'last_year', 'previous_month', 'month', 'product_type_id'));
     }
+
 
     public function creditGrowth(Request $request)
     {
@@ -589,7 +592,6 @@ class ReportController extends Controller
         }
 
         $branches = Branch::orderBy('region', 'asc')->get();
-//        dd($branches);
         $month = Carbon::parse($month_date);
         $previous_month = Carbon::parse($month_date)->subMonth();
         $last_year = Carbon::parse($month_date)->startOfYear()->subMonth();
@@ -608,13 +610,15 @@ class ReportController extends Controller
 
         if ($month_date->format('Y-m') == Carbon::now()->format('Y-m')) {
 
+//            DB::enableQueryLog();
             $product_wise_principal_outstanding = DB::table('customers')
-                ->select('branches.zone', 'branches.region', 'branches.name', 'customers.branch_id', DB::raw("SUM(principle_amount) as principle_amount"))
+                ->select('branches.region', 'branches.name', 'customers.branch_id', DB::raw("SUM(principle_amount) as principle_amount"))
                 ->join('branches', 'customers.branch_id', '=', 'branches.id')
                 ->groupBy('customers.branch_id')
                 ->where('customers.product_type_id', $product_type_id)
                 ->orderBy('customers.branch_id', 'asc')
                 ->get();
+//            dd(DB::getQueryLog());
 
         } else {
             $product_wise_principal_outstanding = DB::table('product_wise_monthlies')
