@@ -56,5 +56,8 @@
         <a href="{{route('enhancement.index', $customer->id)}}" class="nav-link  @if(request()->routeIs('enhancement.*')) active @endif  ">Enhancements</a>
     </li>
 
+    <li class="nav-item">
+        <a href="{{route('adjusted.index', $customer->id)}}" class="nav-link  @if(request()->routeIs('adjusted.*')) active @endif  ">Adjustment</a>
+    </li>
 
 </ul>

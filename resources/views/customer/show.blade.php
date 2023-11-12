@@ -24,6 +24,16 @@
         </div>
     @endif
 
+    @if ($errors->any())
+        <div class="alert alert-danger mb-0">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     @include('theme.customer')
 
     <form method="post" action="{{route('customer.update', $customer->id)}}">
@@ -40,23 +50,21 @@
 
                     @if (Auth::user()->hasRole(['Credit Officer', 'Branch Manager']))
                         @foreach(\App\Models\Branch::where('id',auth()->user()->branch_id)->get() as $branch)
-                            <option  @if($branch->id == $customer->branch_id) selected @endif  value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} - {{$branch->zone}} - {{$branch->district}} - {{$branch->name}}</option>
+                            <option  @if($branch->id == $customer->branch_id) selected @endif  value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} -  {{$branch->district}} - {{$branch->name}}</option>
                         @endforeach
                     @elseif (Auth::user()->hasRole('South Regional MIS Officer'))
                         @foreach(\App\Models\Branch::where('region','South Region')->get() as $branch)
-                            <option  @if($branch->id == $customer->branch_id) selected @endif  value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} - {{$branch->zone}} - {{$branch->district}} - {{$branch->name}}</option>
+                            <option  @if($branch->id == $customer->branch_id) selected @endif  value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} -  {{$branch->district}} - {{$branch->name}}</option>
                         @endforeach
                     @elseif (Auth::user()->hasRole('North Regional MIS Officer'))
                         @foreach(\App\Models\Branch::where('region','North Region')->get() as $branch)
-                            <option  @if($branch->id == $customer->branch_id) selected @endif  value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} - {{$branch->zone}} - {{$branch->district}} - {{$branch->name}}</option>
+                            <option  @if($branch->id == $customer->branch_id) selected @endif  value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} -  {{$branch->district}} - {{$branch->name}}</option>
                         @endforeach
                     @elseif (Auth::user()->hasRole(['Head Office', 'Super-Admin']))
                         @foreach(\App\Models\Branch::all() as $branch)
-                            <option  @if($branch->id == $customer->branch_id) selected @endif  value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} - {{$branch->zone}} - {{$branch->district}} - {{$branch->name}}</option>
+                            <option  @if($branch->id == $customer->branch_id) selected @endif  value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} -  {{$branch->district}} - {{$branch->name}}</option>
                         @endforeach
                     @endif
-
-
 
                 </select>
             </div>
@@ -126,11 +134,11 @@
             </div>
             <div class="col-md-3 mb-3">
                 <label for="customer_cnic"><strong>CNIC</strong></label>
-                <input type="text" class="form-control cnic_mask" id="customer_cnic" value="{{$customer->customer_cnic}}" title="" name="customer_cnic">
+                <input type="text" class="form-control cnic_mask" id="customer_cnic" data-inputmask='"mask": "99999-9999999-9"' data-mask value="{{$customer->customer_cnic}}"  title="" name="customer_cnic">
             </div>
             <div class="col-md-3 mb-3">
                 <label for="customer_contact_number"><strong>Contact Number</strong></label>
-                <input type="text" class="form-control" id="customer_contact_number" value="{{$customer->customer_contact_number}}" required name="customer_contact_number">
+                <input type="text" class="form-control" id="customer_contact_number" data-mask value="{{$customer->customer_contact_number}}" required name="customer_contact_number">
 
             </div>
             <div class="col-md-3 mb-2">
@@ -157,7 +165,7 @@
         <div class="row">
             <div class="col-md-3 mb-3">
                 <label for="amount_enhanced"><strong>Amount Enhanced (if any) </strong></label>
-                <input type="number" step="0.01" min="0.00" value="0.00" class="form-control" id="amount_enhanced" readonly required name="amount_enhanced">
+                <input type="number" step="0.01" min="0.00" value="0.00" class="form-control" id="amount_enhanced"  required name="amount_enhanced">
             </div>
             <div class="col-md-3 mb-3">
                 <label for="sanction_date"><strong>Sanctioned Date</strong></label>
@@ -180,7 +188,7 @@
                     <option value="">None</option>
                     <option value="Monthly" @if($customer->installment_type == "Monthly") selected @endif >Monthly</option>
                     <option value="Quarterly" @if($customer->installment_type == "Quarterly") selected @endif >Quarterly</option>
-                    <option value="Quarterly" @if($customer->installment_type == "Half Yearly") selected @endif >Half Yearly</option>
+                    <option value="Half Yearly" @if($customer->installment_type == "Half Yearly") selected @endif >Half Yearly</option>
                     <option value="Lump sump" @if($customer->installment_type == "Lump sump") selected @endif >Lump sump</option>
                 </select>
             </div>
@@ -213,7 +221,7 @@
             </div>
             <div class="col-md-3 mb-3">
                 <label for="amount_disbursed"><strong>Amount Disbursed</strong></label>
-                <input type="number" class="form-control" id="amount_disbursed" required readonly
+                <input type="number" class="form-control" id="amount_disbursed" required
                        name="amount_disbursed" value="{{$customer->amount_disbursed}}">
             </div>
             <div class="col-md-3 mb-3">
@@ -232,12 +240,12 @@
 
             <div class="col-md-3 mb-3">
                 <label for="kibor_rate"><strong>KIBOR Rate</strong></label>
-                <input type="number" step="0.01" min="0.00" value="{{$customer->kibor_rate}}" class="form-control" id="kibor_rate" disabled>
+                <input type="number" step="0.01" min="0.00" value="{{$customer->kibor_rate}}" class="form-control" id="kibor_rate">
             </div>
 
             <div class="col-md-3 mb-3">
                 <label for="bank_spread_rate"><strong>Bank Spread Rate</strong></label>
-                <input type="number" step="0.01" min="0.00" value="{{$customer->bank_spread_rate}}" class="form-control" id="bank_spread_rate" disabled>
+                <input type="number" step="0.01" min="0.00" value="{{$customer->bank_spread_rate}}" class="form-control" id="bank_spread_rate">
             </div>
 
             <div class="col-md-3 mb-3">
@@ -247,7 +255,7 @@
 
             <div class="col-md-3 mb-2">
                 <label for="secure_unsecure_loan"><strong>Facility</strong></label>
-                <select class="form-control " required id="secure_unsecure_loan" readonly style="width: 100%;" name="secure_unsecure_loan">
+                <select class="form-control "  id="secure_unsecure_loan"  style="width: 100%;" name="secure_unsecure_loan">
                     <option value="">None</option>
                     <option value="Secure" @if($customer->secure_unsecure_loan == 'Secure') selected @endif >Secure</option>
                     <option value="Unsecure" @if($customer->secure_unsecure_loan == 'Unsecure') selected @endif>Unsecure</option>

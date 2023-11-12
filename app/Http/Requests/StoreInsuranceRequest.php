@@ -25,6 +25,10 @@ class StoreInsuranceRequest extends FormRequest
     {
         return [
             //
+            'insurance_company' => 'required',
+            'date_of_insurance' => 'required|date',
+            'insurance_amount' => 'required',
+            'date_of_expiry_of_insurance' => 'required|date',
         ];
     }
 }

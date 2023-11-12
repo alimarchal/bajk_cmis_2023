@@ -199,7 +199,7 @@
         </div>
         <div class="row">
             <div class="col-md-12 p-3">
-                <a href="javascript:;" class="btn btn-primary showModule float-right" data-target="filters">
+                <a href="javascript:;" class="btn btn-primary showModule float-right d-print-none" data-target="filters">
                     Show Filters</a>
 
                 <a href="{{ route('customer.export', [
@@ -215,7 +215,7 @@
                                 'customer_status' => request()->input('filter.customer_status'),
                                 'branch_id' => request()->input('filter.branch_id'),
                                 'starts_before' => request()->input('filter.starts_before'),
-                            ]]) }}" class="btn btn-primary">
+                            ]]) }}" class="btn btn-primary d-print-none">
                     Download
                 </a>
 
@@ -240,7 +240,7 @@
                 <th scope="col">Type</th>
                 <th scope="col" class="text-center"><abbr title="Principal Outstanding">POS</abbr></th>
                 <th scope="col" class="text-center"><abbr title=" Amount Disbursed ">AD</abbr></th>
-                <th scope="col">Category</th>
+                <th scope="col" class="text-center">Category</th>
                 <th scope="col" class="text-center d-print-none">Action</th>
             </tr>
             </thead>
@@ -249,9 +249,7 @@
                 <tr>
                     <td scope="row"><strong>{{$loop->iteration}}</strong></td>
                     <td>
-                        <a href="{{ route('customer.profile', $customer->id) }}" class="print_on_screen">
                             {{ ucwords(strtolower($customer->name)) }}
-                        </a>
                     </td>
                     <td>{{$customer->customer_cnic}}</td>
                     <td>{{$customer->branch->code}}-{{$customer->account_cd_saving}}</td>
@@ -259,15 +257,21 @@
                     <td>{{$customer->secure_unsecure_loan}}</td>
                     <td class="text-right">{{ number_format($customer->principle_amount,2) }}</td>
                     <td class="text-right">{{ number_format($customer->amount_disbursed,2) }}</td>
-                    <td>{{$customer->customer_status}}</td>
+                    <td class="text-center">
+                        @if($customer->status == 0)
+                            Adjusted
+                        @elseif($customer->status == 1)
+                            {{$customer->customer_status}}
+                        @endif
+                        </td>
                     <td class="text-center d-print-none">
-                        <a href="{{route('customer.show', $customer->id)}}">
-                            <span class="fas fa-edit"></span>
-                        </a>
 
-                        <a href="{{route('installment.index', $customer->id)}}">
-                            <span class="fas fa-money-bill"></span>
-                        </a>
+                        <div class="btn-group btn-group-sm">
+                            <a href="{{ route('customer.profile', $customer->id) }}" target="_blank" class="btn btn-success"><i class="fas fa-eye"></i></a>
+                            <a href="{{route('customer.show', $customer->id)}}" class="btn btn-danger"><i class="fas fa-edit"></i></a>
+{{--                            <a href="" target="_blank" class="btn btn-info"><i class="fas fa-print"></i></a>--}}
+                            <a href="{{route('installment.index', $customer->id)}}"  class="btn btn-primary"><i class="fas fa-money-bill"></i></a>
+                        </div>
                     </td>
                 </tr>
             @endforeach
@@ -283,7 +287,7 @@
         </table>
     @endif
     {{$customers->links()}}
-@endsection
+    @endsection
 
 
 @section('customFooterScripts')

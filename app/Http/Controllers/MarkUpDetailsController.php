@@ -6,6 +6,7 @@ use App\Http\Requests\StoreMarkUpDetailsRequest;
 use App\Http\Requests\UpdateMarkUpDetailsRequest;
 use App\Models\Customer;
 use App\Models\MarkUpDetails;
+use DB;
 
 class MarkUpDetailsController extends Controller
 {
@@ -38,10 +39,31 @@ class MarkUpDetailsController extends Controller
      */
     public function store(StoreMarkUpDetailsRequest $request, Customer $customer)
     {
-        $request->merge(['customer_id' => $customer->id]);
-        $litigation = MarkUpDetails::create($request->all());
-        session()->flash('message', 'Markup Details data has been successfully saved.');
-        return to_route('markUpDetails.index', $customer->id);
+        DB::beginTransaction();
+
+        try {
+            $request->merge(['customer_id' => $customer->id]);
+
+            $litigation = MarkUpDetails::create($request->all());
+            $customer->mark_up_date = $request->date;
+            $customer->mark_up_receivable = $request->markup_receivable_4600;
+            $customer->mark_up_recovered_till_date = $request->markup_recovered_till_date;
+            $customer->mark_up_recoverable = $request->markup_recovered_ac_5008;
+            $customer->mark_up_reserve = $request->markup_recovered_ac_5008;
+            $customer->save();
+
+            DB::commit();
+
+            session()->flash('message', 'Markup Details data has been successfully saved.');
+            return to_route('markUpDetails.index', $customer->id);
+        } catch (\Exception $e) {
+            // Rollback the transaction
+            DB::rollBack();
+
+            // Handle the error
+            session()->flash('error', 'There was an error saving the markup details: ' . $e->getMessage());
+            return back()->withInput();
+        }
     }
 
     /**

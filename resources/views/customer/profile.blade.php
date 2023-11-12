@@ -93,14 +93,14 @@
         <tr>
             <td  class="font-weight-bold">Region</td>
             <td  colspan="2">{{$customer->branch->region}}</td>
-            <td class="font-weight-bold">Zone</td>
-            <td  colspan="3">{{$customer->branch->zone}}</td>
+            <td class="font-weight-bold">Branch</td>
+            <td  colspan="3">{{$customer->branch->code}}-{{$customer->branch->name}}</td>
         </tr>
         <tr>
             <td class="font-weight-bold">District</td>
-            <td  colspan="2">{{$customer->branch->district}}</td>
-            <td class="font-weight-bold">Branch</td>
-            <td  colspan="3">{{$customer->branch->code}}-{{$customer->branch->name}}</td>
+            <td  colspan="6">{{$customer->branch->district}}</td>
+{{--            <td class="font-weight-bold"></td>--}}
+{{--            <td  colspan="3"></td>--}}
         </tr>
 
         <tr>
@@ -458,8 +458,8 @@
                     <td>{{$co->principal_amount}}</td>
                     <td>{{$co->mark_up_amount}}</td>
                     <td>{{$co->penalty_charges}}</td>
-                    <td>{{$co->penalty_charges}}</td>
                     <td>{{$co->insurance_charges}}</td>
+                    <td>{{$co->total_principal_markup_penalty}}</td>
                 </tr>
             @endforeach
 

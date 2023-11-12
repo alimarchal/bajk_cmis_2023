@@ -9,7 +9,15 @@
         </div>
     @endif
 
-
+    @if ($errors->any())
+        <div class="alert alert-danger mb-0">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
     <form class="needs-validation" novalidate method="post" action="{{route('insurance.store', $customer->id)}}">
         @csrf
@@ -62,7 +70,7 @@
                 <tr>
                     <th scope="row">{{$loop->iteration}}</th>
                     <td>{{$inu->insurance_company}}</td>
-                    <td>{{$inu->date_of_insurance}}</td>
+                    <td>{{ \Carbon\Carbon::parse($inu->date_of_insurance)->format('d-m-Y') }}</td>
                     <td>{{$inu->insurance_amount}}</td>
                     <td>{{\Carbon\Carbon::parse($inu->date_of_expiry_of_insurance)->format('d-m-Y')}}</td>
                     <td>{{$inu->remarks}}</td>

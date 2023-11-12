@@ -39,8 +39,8 @@
             </div>
 
             <div class="col-md-3 mb-2">
-                <label for="markup_recovered_ac_2405"><strong>Mark-Up Reserve A/C (2305)</strong></label>
-                <input type="number" step="0.01" class="form-control" id="markup_recovered_ac_2405" name="markup_recovered_ac_2405">
+                <label for="markup_recovered_ac_2305"><strong>Mark-Up Reserve A/C (2305)</strong></label>
+                <input type="number" step="0.01" class="form-control" id="markup_recovered_ac_2305" name="markup_recovered_ac_2405">
             </div>
 
 

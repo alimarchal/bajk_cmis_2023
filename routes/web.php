@@ -142,6 +142,12 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     });
 
 
+    Route::controller(\App\Http\Controllers\AdjustedController::class)->group(function () {
+        Route::get('/customer/{customer}/adjusted', 'index')->name('adjusted.index');
+        Route::post('/adjusted/{customer}', 'store')->name('adjusted.store');
+    });
+
+
     Route::controller(\App\Http\Controllers\UserController::class)->group(function () {
         Route::get('/users', 'index')->name('users.index');
         Route::get('/users/create', 'create')->name('users.create');

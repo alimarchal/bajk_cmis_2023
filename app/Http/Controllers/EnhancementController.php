@@ -15,7 +15,6 @@ class EnhancementController extends Controller
     public function index(Customer $customer)
     {
         return view('enhancement.index', compact('customer'));
-
     }
 
     /**

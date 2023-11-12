@@ -30,19 +30,19 @@
                 <select class="form-control select2bs4" id="branch_id" style="width: 100%;" name="branch_id" required>
                     @if (Auth::user()->hasRole(['Credit Officer', 'Branch Manager']))
                         @foreach(\App\Models\Branch::where('id',auth()->user()->branch_id)->get() as $branch)
-                            <option selected value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} - {{$branch->zone}} - {{$branch->district}} - {{$branch->name}}</option>
+                            <option selected value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} - {{$branch->district}} - {{$branch->name}}</option>
                         @endforeach
                     @elseif (Auth::user()->hasRole('South Regional MIS Officer'))
                         @foreach(\App\Models\Branch::where('region','South Region')->get() as $branch)
-                            <option value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} - {{$branch->zone}} - {{$branch->district}} - {{$branch->name}}</option>
+                            <option value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} -  {{$branch->district}} - {{$branch->name}}</option>
                         @endforeach
                     @elseif (Auth::user()->hasRole('North Regional MIS Officer'))
                         @foreach(\App\Models\Branch::where('region','North Region')->get() as $branch)
-                            <option value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} - {{$branch->zone}} - {{$branch->district}} - {{$branch->name}}</option>
+                            <option value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} -  {{$branch->district}} - {{$branch->name}}</option>
                         @endforeach
                     @elseif (Auth::user()->hasRole(['Head Office', 'Super-Admin']))
                         @foreach(\App\Models\Branch::all() as $branch)
-                            <option value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} - {{$branch->zone}} - {{$branch->district}} - {{$branch->name}}</option>
+                            <option value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} -  {{$branch->district}} - {{$branch->name}}</option>
                         @endforeach
                     @endif
 
@@ -59,21 +59,21 @@
 
         <div class="form-row">
             <div class="col-md-3 mb-2">
-                <label for="name"><strong>Name</strong></label>
+                <label for="name"><strong>Name</strong> <span class="text-danger">*</span></label>
                 <input type="text" id="name" class="form-control" name="name" required>
                 <div class="invalid-feedback">
                     Please provide a name.
                 </div>
             </div>
             <div class="col-md-3 mb-3">
-                <label for="son_daughter_wife"><strong>So/Do/Wo</strong></label>
+                <label for="son_daughter_wife"><strong>So/Do/Wo</strong> <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="son_daughter_wife" required name="son_daughter_wife">
                 <div class="invalid-feedback">
                     Please provide a So/Do/Wo.
                 </div>
             </div>
             <div class="col-md-3 mb-2">
-                <label for="gender"><strong>Gender</strong></label>
+                <label for="gender"><strong>Gender</strong> <span class="text-danger">*</span></label>
                 <select class="form-control select2bs4" required id="gender" style="width: 100%;" name="gender">
                     <option value="">None</option>
                     <option value="Male">Male</option>
@@ -84,7 +84,7 @@
                 </div>
             </div>
             <div class="col-md-3 mb-2">
-                <label for="business_department_profession"><strong>Business/Department/Profession</strong></label>
+                <label for="business_department_profession"><strong>Business/Department/Profession</strong> <span class="text-danger">*</span></label>
                 <input name="business_department_profession" class="form-control" id="business_department_profession"
                        required>
                 <div class="invalid-feedback">
@@ -92,53 +92,55 @@
                 </div>
             </div>
             <div class="col-md-3 mb-3">
-                <label for="designation"><strong>Designation </strong></label>
+                <label for="designation"><strong>Designation </strong> <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="designation" title="" name="designation" required>
                 <div class="invalid-feedback">
                     Please provide a Designation.
                 </div>
             </div>
             <div class="col-md-3 mb-3">
-                <label for="pp_number"><strong>PP / Employee No</strong></label>
+                <label for="pp_number"><strong>PP / Employee No</strong> <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="pp_number" name="pp_number" required>
                 <div class="invalid-feedback">
                     Please provide a Designation.
                 </div>
             </div>
             <div class="col-md-3 mb-3">
-                <label for="date_of_birth"><strong>Date of Birth</strong></label>
+                <label for="date_of_birth"><strong>Date of Birth</strong> <span class="text-danger">*</span></label>
                 <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
 
             </div>
             <div class="col-md-3 mb-3">
-                <label for="office_business_address"><strong>Office/Business Address</strong></label>
+                <label for="office_business_address"><strong>Office/Business Address</strong> <span class="text-danger">*</span></label>
                 <input class="form-control" id="office_business_address" required
                        name="office_business_address">
 
             </div>
             <div class="col-md-3 mb-2">
-                <label for="present_address"><strong>Present Address</strong></label>
+                <label for="present_address"><strong>Present Address</strong> <span class="text-danger">*</span></label>
                 <input class="form-control" id="present_address" required
                        name="present_address">
 
             </div>
             <div class="col-md-3 mb-3">
-                <label for="permanent_address"><strong>Permanent Address</strong></label>
+                <label for="permanent_address"><strong>Permanent Address</strong> <span class="text-danger">*</span></label>
                 <input class="form-control" id="permanent_address" required
                        name="permanent_address">
 
             </div>
             <div class="col-md-3 mb-3">
-                <label for="customer_cnic"><strong>CNIC</strong></label>
-                <input type="text" class="form-control cnic_mask" id="customer_cnic" name="customer_cnic">
+                <label for="cnic"><strong>CNIC</strong> <span class="text-danger">*</span></label>
+                <input type="text" name="customer_cnic" class="form-control" data-inputmask='"mask": "99999-9999999-9"' data-mask id="cnic">
+
+{{--                <input type="text" class="form-control cnic_mask" id="customer_cnic" name="customer_cnic">--}}
             </div>
             <div class="col-md-3 mb-3">
-                <label for="customer_contact_number"><strong>Contact Number</strong></label>
-                <input type="text" class="form-control" id="customer_contact_number" required name="customer_contact_number">
+                <label for="customer_contact_number"><strong>Contact Number</strong> <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="customer_contact_number"  data-inputmask='"mask": "9999-9999999"' data-mask  required name="customer_contact_number">
 
             </div>
             <div class="col-md-3 mb-2">
-                <label for="account_cd_saving"><strong>Ac Number/CD/Saving</strong></label>
+                <label for="account_cd_saving"><strong>Ac Number/CD/Saving</strong> <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" id="account_cd_saving" required name="account_cd_saving">
 
             </div>
@@ -158,16 +160,16 @@
 
 
         <div class="row">
+{{--            <div class="col-md-3 mb-3">--}}
+{{--                <label for="amount_enhanced"><strong>Amount Enhanced (if any) </strong></label>--}}
+{{--                <input type="number" step="0.01" min="0.00" value="0.00" class="form-control" id="amount_enhanced" required name="amount_enhanced">--}}
+{{--            </div>--}}
             <div class="col-md-3 mb-3">
-                <label for="amount_enhanced"><strong>Amount Enhanced (if any) </strong></label>
-                <input type="number" step="0.01" min="0.00" value="0.00" class="form-control" id="amount_enhanced" required name="amount_enhanced">
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="sanction_date"><strong>Sanctioned Date</strong></label>
+                <label for="sanction_date"><strong>Sanctioned Date</strong> <span class="text-danger">*</span></label>
                 <input type="date" class="form-control" id="sanction_date" required name="sanction_date">
             </div>
             <div class="col-md-3 mb-3">
-                <label for="tenure_of_loan_in_months"><strong>Tenure of Loan in Months</strong></label>
+                <label for="tenure_of_loan_in_months"><strong>Tenure of Loan in Months</strong> <span class="text-danger">*</span></label>
 
                 <select class="form-control select2bs4" required id="tenure_of_loan_in_months" style="width: 100%;" name="tenure_of_loan_in_months">
                     <option value="">None</option>
@@ -178,7 +180,7 @@
 
             </div>
             <div class="col-md-3 mb-3">
-                <label for="installment_type"><strong>Installment Type</strong></label>
+                <label for="installment_type"><strong>Installment Type</strong> <span class="text-danger">*</span></label>
                 <select class="form-control select2bs4" required id="installment_type" style="width: 100%;" name="installment_type">
                     <option value="">None</option>
                     <option value="Monthly">Monthly</option>
@@ -189,21 +191,21 @@
             </div>
 
             <div class="col-md-3 mb-3">
-                <label for="emi_amount"><strong>Installment Amount</strong></label>
+                <label for="emi_amount"><strong>Installment Amount</strong> <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" step="0.01" min="0" id="emi_amount" required name="emi_amount">
             </div>
 
+{{--            <div class="col-md-3 mb-3">--}}
+{{--                <label for="no_of_installments"><strong>No of Installment</strong></label>--}}
+{{--                <select class="form-control select2bs4" required id="no_of_installments" style="width: 100%;" name="no_of_installments">--}}
+{{--                    <option value="">None</option>--}}
+{{--                    @for($i = 1; $i <= 240; $i++)--}}
+{{--                        <option value="{{$i}}">{{$i}}</option>--}}
+{{--                    @endfor--}}
+{{--                </select>--}}
+{{--            </div>--}}
             <div class="col-md-3 mb-3">
-                <label for="no_of_installments"><strong>No of Installment</strong></label>
-                <select class="form-control select2bs4" required id="no_of_installments" style="width: 100%;" name="no_of_installments">
-                    <option value="">None</option>
-                    @for($i = 1; $i <= 240; $i++)
-                        <option value="{{$i}}">{{$i}}</option>
-                    @endfor
-                </select>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="dac_issuance_date"><strong>DAC Issuance Date</strong></label>
+                <label for="dac_issuance_date"><strong>DAC Issuance Date</strong> <span class="text-danger">*</span></label>
                 <input type="date" class="form-control" id="dac_issuance_date" required
                        name="dac_issuance_date">
                 <div class="invalid-feedback">
@@ -212,13 +214,13 @@
             </div>
 
             <div class="col-md-3 mb-3">
-                <label for="loan_due_date"><strong> Installment Due Date</strong></label>
+                <label for="loan_due_date"><strong> Installment Due Date</strong> <span class="text-danger">*</span></label>
                 <input type="date" class="form-control" id="loan_due_date" required
                        name="loan_due_date">
             </div>
 
             <div class="col-md-3 mb-3">
-                <label for="disbursement_date"><strong>DAC Disbursement Date</strong></label>
+                <label for="disbursement_date"><strong>DAC Disbursement Date</strong> <span class="text-danger">*</span></label>
                 <input type="date" class="form-control" id="disbursement_date" required
                        name="disbursement_date">
                 <div class="invalid-feedback">
@@ -226,7 +228,7 @@
                 </div>
             </div>
             <div class="col-md-3 mb-3">
-                <label for="amount_disbursed"><strong>Amount Disbursed</strong></label>
+                <label for="amount_disbursed"><strong>Amount Disbursed</strong> <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" id="amount_disbursed" required
                        name="amount_disbursed">
                 <div class="invalid-feedback">
@@ -234,7 +236,7 @@
                 </div>
             </div>
             <div class="col-md-3 mb-3">
-                <label for="expiry_date_as_per_dac"><strong>Expiry Date as per DAC</strong></label>
+                <label for="expiry_date_as_per_dac"><strong>Expiry Date as per DAC</strong> <span class="text-danger">*</span></label>
                 <input type="date" class="form-control" id="expiry_date_as_per_dac" required name="expiry_date_as_per_dac">
                 <div class="invalid-feedback">
                     Please provide a Sanctioned Date.

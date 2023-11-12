@@ -6,10 +6,20 @@ use App\Http\Controllers\ValuationController;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Customer extends Model
 {
     use HasFactory;
+    use LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['*']);
+    }
 
 
     /*
@@ -20,7 +30,6 @@ class Customer extends Model
         5 => Doubtful
         6 => Loss
      */
-
 
 
     public function scopeStartsBefore(Builder $query, $date): Builder
@@ -130,6 +139,12 @@ class Customer extends Model
         'loan_due_date',
         'last_installment_date',
         'status',
+        'mark_up_date',
+        'mark_up_receivable',
+        'mark_up_recovered_till_date',
+        'mark_up_recoverable',
+        'mark_up_reserve',
+
     ];
 
 
@@ -211,5 +226,20 @@ class Customer extends Model
     {
         return $this->hasMany(Enhancement::class);
     }
+
+    public function adjusted(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Adjusted::class);
+    }
+
+//    public function getRouteKeyName()
+//    {
+//        return 'encrypted_id';
+//    }
+//
+//    public function resolveRouteBinding($value, $field = null)
+//    {
+//        return $this->where($field ?? $this->getRouteKey(), Crypt::decrypt($value))->firstOrFail();
+//    }
 
 }

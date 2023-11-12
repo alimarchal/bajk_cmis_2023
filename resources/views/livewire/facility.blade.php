@@ -39,14 +39,15 @@
 
         <select class="form-control select2bs4" required id="renewal_enhancement_fresh_sanction" style="width: 100%;" name="renewal_enhancement_fresh_sanction">
             <option value="">None</option>
+
             <option value="Renewal" @if(!empty($customer) && $customer->renewal_enhancement_fresh_sanction == "Renewal") selected @endif >Renewal</option>
             <option value="Enhancement" @if(!empty($customer) && $customer->renewal_enhancement_fresh_sanction == "Enhancement") selected @endif >Enhancement</option>
             <option value="Fresh Sanction" @if(!empty($customer) && $customer->renewal_enhancement_fresh_sanction == "Fresh Sanction") selected @endif >Fresh Sanction</option>
         </select>
     </div>
     <div class="col-md-3 mb-3">
-        <label for="amount_sanctioned"><strong>Amount Sanctioned</strong></label>
+        <label for="amount_sanctioned"><strong>Amount Sanctioned</strong>&nbsp;<span class="text-danger">*</span></label>
         <input type="number" class="form-control" id="amount_sanctioned" required
-               name="amount_sanctioned" @if(request()->routeIs('customer.show')) readonly @endif step="0.01" min="0" @if(!empty($customer)) value="{{$customer->amount_sanctioned}}" @endif>
+               name="amount_sanctioned" @if(request()->routeIs('customer.show'))  @endif step="0.01" min="0" @if(!empty($customer)) value="{{$customer->amount_sanctioned}}" @endif>
     </div>
 </div>

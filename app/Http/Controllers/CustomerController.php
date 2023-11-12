@@ -347,6 +347,7 @@ class CustomerController extends Controller
         $per_page_count = $request->input('per_page_count', 10);
 
         if (Auth::user()->hasRole(['Credit Officer', 'Branch Manager'])) {
+
             $customers = QueryBuilder::for(Customer::with('branch', 'product', 'product_type','guarantee')->where('branch_id', \auth()->user()->branch_id))
                 ->allowedFilters([
                     AllowedFilter::scope('starts_before'),
@@ -411,7 +412,6 @@ class CustomerController extends Controller
                     AllowedFilter::exact('manual_account'),
                     AllowedFilter::exact('customer_status'),
                     AllowedFilter::exact('status'),
-
                 ])->paginate($per_page_count)->withQueryString();
         } elseif (Auth::user()->hasRole(['Head Office', 'Super-Admin'])) {
             $customers = QueryBuilder::for(Customer::with('branch', 'product', 'guarantee', 'product_type'))
@@ -461,11 +461,14 @@ class CustomerController extends Controller
     {
 
         $flag = true;
+        $customer = null;
         DB::beginTransaction();
         try {
 
             $branch = Branch::find($request->branch_id);
-//            $request->merge(['account_cd_saving' => $branch->code . '-' . $request->account_cd_saving]);
+
+            $request->merge(['no_of_installments' => $request->tenure_of_loan_in_months]);
+
             $customer = Customer::create($request->all());
 
             $interest = Interest::create([
@@ -492,8 +495,6 @@ class CustomerController extends Controller
             session()->flash('error', 'Something went wrong!.');
             return to_route('customer.show', $customer->id);
         }
-
-
     }
 
     /**
@@ -504,6 +505,12 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
+        if (Auth::user()->hasRole(['Credit Officer', 'Branch Manager'])) {
+            if ($customer->branch_id  != \auth()->user()->branch_id)
+            {
+                abort(401);
+            }
+        }
         return view('customer.show', compact('customer'));
     }
 

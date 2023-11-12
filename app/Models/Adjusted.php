@@ -4,29 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
-class Installment extends Model
+
+class Adjusted extends Model
 {
     use HasFactory;
     use LogsActivity;
+    protected $fillable = [
+        'user_id',
+        'customer_id',
+        'adjusted_status',
+        'name', 'text'
+    ];
+
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->logOnly(['*']);
+        // Chain fluent methods for configuration options
     }
-
-    public $fillable = [
-        'customer_id',
-        'user_id',
-        'date',
-        'principal_amount',
-        'mark_up_amount',
-        'penalty_charges',
-        'insurance_charges',
-        'principal_outstanding',
-        'total_principal_markup_penalty',
-    ];
 }
