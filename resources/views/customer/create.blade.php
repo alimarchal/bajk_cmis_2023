@@ -17,6 +17,22 @@
         </div>
     @endif
 
+    @if(session()->has('error'))
+        <div class="alert alert-danger">
+            {{ session()->get('error') }}
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     @include('theme.generalCustomer')
 
     <form method="post" action="{{route('customer.store')}}">
@@ -34,24 +50,17 @@
                         @endforeach
                     @elseif (Auth::user()->hasRole('South Regional MIS Officer'))
                         @foreach(\App\Models\Branch::where('region','South Region')->get() as $branch)
-                            <option value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} -  {{$branch->district}} - {{$branch->name}}</option>
+                            <option value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} - {{$branch->district}} - {{$branch->name}}</option>
                         @endforeach
                     @elseif (Auth::user()->hasRole('North Regional MIS Officer'))
                         @foreach(\App\Models\Branch::where('region','North Region')->get() as $branch)
-                            <option value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} -  {{$branch->district}} - {{$branch->name}}</option>
+                            <option value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} - {{$branch->district}} - {{$branch->name}}</option>
                         @endforeach
                     @elseif (Auth::user()->hasRole(['Head Office', 'Super-Admin']))
                         @foreach(\App\Models\Branch::all() as $branch)
-                            <option value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} -  {{$branch->district}} - {{$branch->name}}</option>
+                            <option value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} - {{$branch->district}} - {{$branch->name}}</option>
                         @endforeach
                     @endif
-
-
-                    {{--                    @if (Auth::user()->hasRole(['Credit Officer', 'Branch Manager'])) {--}}
-                    {{--                    @foreach(\App\Models\Branch::all() as $branch)--}}
-                    {{--                        <option value="{{$branch->id}}">{{$branch->code}} - {{$branch->region}} - {{$branch->zone}} - {{$branch->district}} - {{$branch->name}}</option>--}}
-                    {{--                    @endforeach--}}
-                    {{--                    @endif--}}
 
                 </select>
             </div>
@@ -60,14 +69,14 @@
         <div class="form-row">
             <div class="col-md-3 mb-2">
                 <label for="name"><strong>Name</strong> <span class="text-danger">*</span></label>
-                <input type="text" id="name" class="form-control" name="name" required>
+                <input type="text" id="name" class="form-control" name="name" value="{{ old('name') }}" required>
                 <div class="invalid-feedback">
                     Please provide a name.
                 </div>
             </div>
             <div class="col-md-3 mb-3">
                 <label for="son_daughter_wife"><strong>So/Do/Wo</strong> <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="son_daughter_wife" required name="son_daughter_wife">
+                <input type="text" class="form-control" id="son_daughter_wife" value="{{ old('son_daughter_wife') }}" required name="son_daughter_wife">
                 <div class="invalid-feedback">
                     Please provide a So/Do/Wo.
                 </div>
@@ -76,79 +85,87 @@
                 <label for="gender"><strong>Gender</strong> <span class="text-danger">*</span></label>
                 <select class="form-control select2bs4" required id="gender" style="width: 100%;" name="gender">
                     <option value="">None</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
+                    <option value="Male" {{ old('gender') == 'Male' ? 'selected' : '' }}>Male</option>
+                    <option value="Female" {{ old('gender') == 'Female' ? 'selected' : '' }}>Female</option>
                 </select>
                 <div class="invalid-feedback">
                     Please select a Gender.
                 </div>
             </div>
+
             <div class="col-md-3 mb-2">
                 <label for="business_department_profession"><strong>Business/Department/Profession</strong> <span class="text-danger">*</span></label>
                 <input name="business_department_profession" class="form-control" id="business_department_profession"
-                       required>
+                       required value="{{ old('business_department_profession') }}">
                 <div class="invalid-feedback">
                     Please provide a Business/Department/Profession.
                 </div>
             </div>
             <div class="col-md-3 mb-3">
                 <label for="designation"><strong>Designation </strong> <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="designation" title="" name="designation" required>
+                <input type="text" class="form-control" id="designation" title="" name="designation" required
+                       value="{{ old('designation') }}">
                 <div class="invalid-feedback">
                     Please provide a Designation.
                 </div>
             </div>
+
             <div class="col-md-3 mb-3">
                 <label for="pp_number"><strong>PP / Employee No</strong> <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="pp_number" name="pp_number" required>
+                <input type="text" class="form-control" id="pp_number" name="pp_number" required
+                       value="{{ old('pp_number') }}">
                 <div class="invalid-feedback">
-                    Please provide a Designation.
+                    Please provide a PP / Employee No.
                 </div>
             </div>
+
             <div class="col-md-3 mb-3">
                 <label for="date_of_birth"><strong>Date of Birth</strong> <span class="text-danger">*</span></label>
-                <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
-
+                <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required
+                       value="{{ old('date_of_birth') }}">
             </div>
+
             <div class="col-md-3 mb-3">
                 <label for="office_business_address"><strong>Office/Business Address</strong> <span class="text-danger">*</span></label>
                 <input class="form-control" id="office_business_address" required
-                       name="office_business_address">
-
+                       name="office_business_address" value="{{ old('office_business_address') }}">
             </div>
+
             <div class="col-md-3 mb-2">
                 <label for="present_address"><strong>Present Address</strong> <span class="text-danger">*</span></label>
                 <input class="form-control" id="present_address" required
-                       name="present_address">
-
+                       name="present_address" value="{{ old('present_address') }}">
             </div>
+
             <div class="col-md-3 mb-3">
                 <label for="permanent_address"><strong>Permanent Address</strong> <span class="text-danger">*</span></label>
                 <input class="form-control" id="permanent_address" required
-                       name="permanent_address">
-
+                       name="permanent_address" value="{{ old('permanent_address') }}">
             </div>
+
             <div class="col-md-3 mb-3">
                 <label for="cnic"><strong>CNIC</strong> <span class="text-danger">*</span></label>
-                <input type="text" name="customer_cnic" class="form-control" data-inputmask='"mask": "99999-9999999-9"' data-mask id="cnic">
-
-{{--                <input type="text" class="form-control cnic_mask" id="customer_cnic" name="customer_cnic">--}}
+                <input type="text" name="customer_cnic" class="form-control" data-inputmask='"mask": "99999-9999999-9"' data-mask id="cnic"
+                       value="{{ old('customer_cnic') }}">
             </div>
+
             <div class="col-md-3 mb-3">
                 <label for="customer_contact_number"><strong>Contact Number</strong> <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="customer_contact_number"  data-inputmask='"mask": "9999-9999999"' data-mask  required name="customer_contact_number">
-
+                <input type="text" class="form-control" id="customer_contact_number" data-inputmask='"mask": "9999-9999999"' data-mask required name="customer_contact_number"
+                       value="{{ old('customer_contact_number') }}">
             </div>
+
             <div class="col-md-3 mb-2">
                 <label for="account_cd_saving"><strong>Ac Number/CD/Saving</strong> <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" id="account_cd_saving" required name="account_cd_saving">
-
+                <input type="text" class="form-control" id="account_cd_saving" required name="account_cd_saving"
+                       value="{{ old('account_cd_saving') }}">
             </div>
 
             <div class="form-group col-md-3">
                 <label for="manual_account">Manual Account No</label>
-                <input type="text" class="form-control" id="manual_account" name="manual_account" value="">
+                <input type="text" class="form-control" id="manual_account" name="manual_account" value="{{ old('manual_account') }}">
             </div>
+
         </div>
 
 
@@ -160,131 +177,141 @@
 
 
         <div class="row">
-{{--            <div class="col-md-3 mb-3">--}}
-{{--                <label for="amount_enhanced"><strong>Amount Enhanced (if any) </strong></label>--}}
-{{--                <input type="number" step="0.01" min="0.00" value="0.00" class="form-control" id="amount_enhanced" required name="amount_enhanced">--}}
-{{--            </div>--}}
             <div class="col-md-3 mb-3">
                 <label for="sanction_date"><strong>Sanctioned Date</strong> <span class="text-danger">*</span></label>
-                <input type="date" class="form-control" id="sanction_date" required name="sanction_date">
+                <input type="date" class="form-control" id="sanction_date" required name="sanction_date"
+                       value="{{ old('sanction_date') }}">
             </div>
+
             <div class="col-md-3 mb-3">
                 <label for="tenure_of_loan_in_months"><strong>Tenure of Loan in Months</strong> <span class="text-danger">*</span></label>
-
                 <select class="form-control select2bs4" required id="tenure_of_loan_in_months" style="width: 100%;" name="tenure_of_loan_in_months">
                     <option value="">None</option>
                     @for($i = 1; $i <= 60; $i++)
-                        <option value="{{$i}}">{{$i}} Months</option>
+                        <option value="{{$i}}" {{ old('tenure_of_loan_in_months') == $i ? 'selected' : '' }}>{{$i}} Months</option>
                     @endfor
                 </select>
-
             </div>
+
+
             <div class="col-md-3 mb-3">
                 <label for="installment_type"><strong>Installment Type</strong> <span class="text-danger">*</span></label>
                 <select class="form-control select2bs4" required id="installment_type" style="width: 100%;" name="installment_type">
                     <option value="">None</option>
-                    <option value="Monthly">Monthly</option>
-                    <option value="Quarterly">Quarterly</option>
-                    <option value="Half Yearly">Half Yearly</option>
-                    <option value="Lump sump">Lump sump</option>
+                    <option value="Monthly" {{ old('installment_type') == 'Monthly' ? 'selected' : '' }}>Monthly</option>
+                    <option value="Quarterly" {{ old('installment_type') == 'Quarterly' ? 'selected' : '' }}>Quarterly</option>
+                    <option value="Half Yearly" {{ old('installment_type') == 'Half Yearly' ? 'selected' : '' }}>Half Yearly</option>
+                    <option value="Lump sump" {{ old('installment_type') == 'Lump sump' ? 'selected' : '' }}>Lump sump</option>
                 </select>
             </div>
 
             <div class="col-md-3 mb-3">
                 <label for="emi_amount"><strong>Installment Amount</strong> <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" step="0.01" min="0" id="emi_amount" required name="emi_amount">
+                <input type="number" class="form-control" step="0.01" min="0" id="emi_amount" required name="emi_amount"
+                       value="{{ old('emi_amount') }}">
             </div>
 
-{{--            <div class="col-md-3 mb-3">--}}
-{{--                <label for="no_of_installments"><strong>No of Installment</strong></label>--}}
-{{--                <select class="form-control select2bs4" required id="no_of_installments" style="width: 100%;" name="no_of_installments">--}}
-{{--                    <option value="">None</option>--}}
-{{--                    @for($i = 1; $i <= 240; $i++)--}}
-{{--                        <option value="{{$i}}">{{$i}}</option>--}}
-{{--                    @endfor--}}
-{{--                </select>--}}
-{{--            </div>--}}
+
+            {{--            <div class="col-md-3 mb-3">--}}
+            {{--                <label for="no_of_installments"><strong>No of Installment</strong></label>--}}
+            {{--                <select class="form-control select2bs4" required id="no_of_installments" style="width: 100%;" name="no_of_installments">--}}
+            {{--                    <option value="">None</option>--}}
+            {{--                    @for($i = 1; $i <= 240; $i++)--}}
+            {{--                        <option value="{{$i}}">{{$i}}</option>--}}
+            {{--                    @endfor--}}
+            {{--                </select>--}}
+            {{--            </div>--}}
+
+
             <div class="col-md-3 mb-3">
                 <label for="dac_issuance_date"><strong>DAC Issuance Date</strong> <span class="text-danger">*</span></label>
                 <input type="date" class="form-control" id="dac_issuance_date" required
-                       name="dac_issuance_date">
+                       name="dac_issuance_date" value="{{ old('dac_issuance_date') }}">
                 <div class="invalid-feedback">
-                    Please provide a Dac Issuance Date.
+                    Please provide a DAC Issuance Date.
                 </div>
             </div>
 
             <div class="col-md-3 mb-3">
                 <label for="loan_due_date"><strong> Installment Due Date</strong> <span class="text-danger">*</span></label>
                 <input type="date" class="form-control" id="loan_due_date" required
-                       name="loan_due_date">
+                       name="loan_due_date" value="{{ old('loan_due_date') }}">
             </div>
 
             <div class="col-md-3 mb-3">
                 <label for="disbursement_date"><strong>DAC Disbursement Date</strong> <span class="text-danger">*</span></label>
                 <input type="date" class="form-control" id="disbursement_date" required
-                       name="disbursement_date">
+                       name="disbursement_date" value="{{ old('disbursement_date') }}">
                 <div class="invalid-feedback">
                     Please provide a DAC Disbursement Date.
                 </div>
             </div>
+
             <div class="col-md-3 mb-3">
                 <label for="amount_disbursed"><strong>Amount Disbursed</strong> <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" id="amount_disbursed" required
-                       name="amount_disbursed">
+                       name="amount_disbursed" value="{{ old('amount_disbursed') }}">
                 <div class="invalid-feedback">
-                    Please provide a Amount Disbursed.
+                    Please provide an Amount Disbursed.
                 </div>
             </div>
+
             <div class="col-md-3 mb-3">
                 <label for="expiry_date_as_per_dac"><strong>Expiry Date as per DAC</strong> <span class="text-danger">*</span></label>
-                <input type="date" class="form-control" id="expiry_date_as_per_dac" required name="expiry_date_as_per_dac">
+                <input type="date" class="form-control" id="expiry_date_as_per_dac" required
+                       name="expiry_date_as_per_dac" value="{{ old('expiry_date_as_per_dac') }}">
                 <div class="invalid-feedback">
                     Please provide a Sanctioned Date.
                 </div>
             </div>
+
             <div class="col-md-3 mb-2">
                 <label for="kibor_or_fixed"><strong>KIBOR / Fixed</strong></label>
                 <select class="form-control select2bs4" required id="kibor_or_fixed" style="width: 100%;" name="kibor_or_fixed">
                     <option value="">None</option>
-                    <option value="1">KIBOR</option>
-                    <option value="0">Fixed</option>
+                    <option value="1" {{ old('kibor_or_fixed') == '1' ? 'selected' : '' }}>KIBOR</option>
+                    <option value="0" {{ old('kibor_or_fixed') == '0' ? 'selected' : '' }}>Fixed</option>
                 </select>
             </div>
+
             <div class="col-md-3 mb-3">
                 <label for="kibor_rate"><strong>KIBOR Rate</strong></label>
-                <input type="number" step="0.01" min="0.00" value="0.00" class="form-control" id="kibor_rate" required name="kibor_rate">
+                <input type="number" step="0.01" min="0.00" value="0.00" class="form-control" id="kibor_rate" required name="kibor_rate"
+                       value="{{ old('kibor_rate') }}">
             </div>
 
             <div class="col-md-3 mb-3">
                 <label for="bank_spread_rate"><strong>Bank Spread Rate</strong></label>
-                <input type="number" step="0.01" min="0.00" class="form-control" value="0.00" id="bank_spread_rate" required name="bank_spread_rate">
+                <input type="number" step="0.01" min="0.00" class="form-control" value="0.00" id="bank_spread_rate" required name="bank_spread_rate"
+                       value="{{ old('bank_spread_rate') }}">
             </div>
 
             <div class="col-md-3 mb-3">
                 <label for="mark_up_rate"><strong>Markup Rate <sub>(KIBOR+SPREAD)</sub> </strong></label>
-                <input type="number" step="0.01" min="0.00" class="form-control" id="mark_up_rate" readonly required name="mark_up_rate">
+                <input type="number" step="0.01" min="0.00" class="form-control" id="mark_up_rate" readonly required name="mark_up_rate"
+                       value="{{ old('mark_up_rate') }}">
             </div>
 
             <div class="col-md-3 mb-2">
                 <label for="secure_unsecure_loan"><strong>Facility (Secure/Unsecure Principal)</strong></label>
                 <select class="form-control select2bs4" required id="secure_unsecure_loan" style="width: 100%;" name="secure_unsecure_loan">
                     <option value="">None</option>
-                    <option value="Secure">Secure Principal</option>
-                    <option value="Unsecure">Unsecure Principal</option>
+                    <option value="Secure" {{ old('secure_unsecure_loan') == 'Secure' ? 'selected' : '' }}>Secure Principal</option>
+                    <option value="Unsecure" {{ old('secure_unsecure_loan') == 'Unsecure' ? 'selected' : '' }}>Unsecure Principal</option>
                 </select>
             </div>
 
             <div class="col-md-3 mb-3">
                 <label for="branch_manager_name_while_sanctioning"><strong>Sanctioning (Branch Manager)</strong></label>
                 <input type="text" class="form-control" id="branch_manager_name_while_sanctioning" required
-                       name="branch_manager_name_while_sanctioning">
+                       name="branch_manager_name_while_sanctioning" value="{{ old('branch_manager_name_while_sanctioning') }}">
             </div>
 
 
             <div class="col-md-3 mb-3">
                 <label for="principle_amount"><strong>Principal Outstanding</strong></label>
                 <input type="number" step="0.01" class="form-control" id="principle_amount" required
-                       name="principle_amount">
+                       name="principle_amount" value="{{ old('principle_amount') }}">
             </div>
         </div>
         <button class="btn btn-primary" type="submit">Save & Next</button>

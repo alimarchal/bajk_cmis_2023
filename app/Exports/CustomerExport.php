@@ -135,8 +135,8 @@ class CustomerExport implements FromCollection, WithHeadings, ShouldAutoSize
                     'customers.status'
                 )
                 ->get();
-        } elseif (Auth::user()->hasRole('South Regional MIS Officer')) {
-            $south_branches = Branch::where('region', 'South Region')->get('id');
+        } elseif (Auth::user()->hasRole('MUZAFFARABAD REGION')) {
+            $south_branches = Branch::where('region', 'MUZAFFARABAD')->get('id');
             $branches = [];
             foreach ($south_branches as $item) {
                 $branches[] = $item->id;
@@ -206,9 +206,80 @@ class CustomerExport implements FromCollection, WithHeadings, ShouldAutoSize
                     'customers.customer_status',
                     'customers.status'
                 )->get();
-        } elseif (Auth::user()->hasRole('North Regional MIS Officer')) {
+        } elseif (Auth::user()->hasRole('MIRPUR REGION')) {
+            $south_branches = Branch::where('region', 'MIRPUR')->get('id');
+            $branches = [];
+            foreach ($south_branches as $item) {
+                $branches[] = $item->id;
+            }
 
-            $north_branches = Branch::where('region', 'North Region')->get('id');
+            $customers = QueryBuilder::for(Customer::with('branch', 'product', 'product_type')->whereIn('branch_id', $branches))
+                ->join('branches', 'customers.branch_id', '=', 'branches.id')
+                ->join('products', 'customers.product_id', '=', 'products.id')
+                ->join('product_types', 'customers.product_type_id', '=', 'product_types.id')
+                ->allowedFilters([
+                    AllowedFilter::scope('starts_before'),
+                    AllowedFilter::scope('search_string'),
+                    AllowedFilter::exact('product_id'),
+                    AllowedFilter::exact('branch_id'),
+                    AllowedFilter::exact('customer_cnic'),
+                    AllowedFilter::exact('product_type_id'),
+                    AllowedFilter::exact('customer_status'),
+                    AllowedFilter::exact('branch_id'),
+                    AllowedFilter::exact('account_cd_saving'),
+                    AllowedFilter::exact('gender'),
+                    AllowedFilter::exact('customer_status'),
+                    AllowedFilter::exact('manual_account'),
+                    AllowedFilter::exact('status'),
+
+                ])
+                ->select('customers.id', 'branches.name as branch_name',
+                    'customers.name',
+                    'customers.son_daughter_wife',
+                    'customers.gender',
+                    'customers.business_department_profession',
+                    'customers.designation',
+                    'customers.pp_number',
+                    'customers.date_of_birth',
+                    'customers.office_business_address',
+                    'customers.present_address',
+                    'customers.permanent_address',
+                    'customers.district',
+                    'customers.customer_cnic',
+                    'customers.customer_contact_number',
+                    'customers.account_cd_saving',
+                    'customers.manual_account',
+                    'products.product_name',
+                    'product_types.product_type',
+                    'customers.renewal_enhancement_fresh_sanction',
+                    'customers.amount_sanctioned',
+                    'customers.amount_enhanced',
+                    'customers.sanction_date',
+                    'customers.tenure_of_loan_in_months',
+                    'customers.installment_type',
+                    'customers.emi_amount',
+                    'customers.no_of_installments',
+                    'customers.dac_issuance_date',
+                    'customers.disbursement_date',
+                    'customers.loan_due_date',
+                    'customers.amount_disbursed',
+                    'customers.expiry_date_as_per_dac',
+                    'customers.kibor_or_fixed',
+                    'customers.kibor_rate',
+                    'customers.bank_spread_rate',
+                    'customers.mark_up_rate',
+                    'customers.secure_unsecure_loan',
+                    'customers.branch_manager_name_while_sanctioning',
+                    'customers.principle_amount',
+                    'customers.mark_up_receivable',
+                    'customers.total',
+                    'customers.last_installment_date',
+                    'customers.customer_status',
+                    'customers.status'
+                )->get();
+        } elseif (Auth::user()->hasRole('RAWALAKOT REGION')) {
+
+            $north_branches = Branch::where('region', 'RAWALAKOT')->get('id');
             $branches = [];
             foreach ($north_branches as $item) {
                 $branches[] = $item->id;

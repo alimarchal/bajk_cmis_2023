@@ -55,7 +55,7 @@
 
 
     <link rel="stylesheet" href="https://cms.ajkced.gok.pk/daterange/daterangepicker.min.css">
-{{--    <script src="https://cms.ajkced.gok.pk/daterange/jquery-3.6.0.min.js"></script>--}}
+    {{--    <script src="https://cms.ajkced.gok.pk/daterange/jquery-3.6.0.min.js"></script>--}}
     <script src="https://cms.ajkced.gok.pk/daterange/moment.min.js"></script>
     <script src="https://cms.ajkced.gok.pk/daterange/knockout-3.5.1.js" defer></script>
     <script src="https://cms.ajkced.gok.pk/daterange/daterangepicker.min.js" defer></script>
@@ -168,15 +168,42 @@
 
 
                 @role('Super-Admin|North Regional MIS Officer|South Regional MIS Officer')
-                    <div class="form-group col-md-3">
-                        <label for="branch_id"><strong>Branch Name</strong></label>
-                        <select class="form-control select2bs4" id="branch_id" name="filter[branch_id]" style="width:100%">
-                            <option value="">None</option>
-                            @foreach(App\Models\Branch::all() as $branch)
+                <div class="form-group col-md-3">
+                    <label for="branch_id"><strong>Branch Name</strong></label>
+                    <select class="form-control select2bs4" id="branch_id" name="filter[branch_id]" style="width:100%">
+                        <option value="">None</option>
+                        @foreach(App\Models\Branch::all() as $branch)
+                            <option value="{{ $branch->id }}" {{ request()->input('filter.branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                @endrole
+
+
+                @role('MUZAFFARABAD REGION|MIRPUR REGION|RAWALAKOT REGION')
+                <div class="form-group col-md-3">
+
+                    @php $role = auth()->user()->roles->first()->name; @endphp
+                    <label for="branch_id"><strong>Branch Name</strong></label>
+                    <select class="form-control select2bs4" id="branch_id" name="filter[branch_id]" style="width:100%">
+                        <option value="">None</option>
+                        @if($role == "MUZAFFARABAD REGION")
+                            @foreach(App\Models\Branch::where('region', "MUZAFFARABAD")->get() as $branch)
                                 <option value="{{ $branch->id }}" {{ request()->input('filter.branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->name }}</option>
                             @endforeach
-                        </select>
-                    </div>
+                        @elseif($role == "MIRPUR REGION")
+                            @foreach(App\Models\Branch::where('region', "MIRPUR")->get() as $branch)
+                                <option value="{{ $branch->id }}" {{ request()->input('filter.branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->name }}</option>
+                            @endforeach
+                        @elseif($role == "RAWALAKOT REGION")
+                            @foreach(App\Models\Branch::where('region', "RAWALAKOT")->get() as $branch)
+                                <option value="{{ $branch->id }}" {{ request()->input('filter.branch_id') == $branch->id ? 'selected' : '' }}>{{ $branch->name }}</option>
+                            @endforeach
+                        @endif
+
+
+                    </select>
+                </div>
                 @endrole
 
 
@@ -249,7 +276,7 @@
                 <tr>
                     <td scope="row"><strong>{{$loop->iteration}}</strong></td>
                     <td>
-                            {{ ucwords(strtolower($customer->name)) }}
+                        {{ ucwords(strtolower($customer->name)) }}
                     </td>
                     <td>{{$customer->customer_cnic}}</td>
                     <td>{{$customer->branch->code}}-{{$customer->account_cd_saving}}</td>
@@ -263,14 +290,14 @@
                         @elseif($customer->status == 1)
                             {{$customer->customer_status}}
                         @endif
-                        </td>
+                    </td>
                     <td class="text-center d-print-none">
 
                         <div class="btn-group btn-group-sm">
                             <a href="{{ route('customer.profile', $customer->id) }}" target="_blank" class="btn btn-success"><i class="fas fa-eye"></i></a>
                             <a href="{{route('customer.show', $customer->id)}}" class="btn btn-danger"><i class="fas fa-edit"></i></a>
-{{--                            <a href="" target="_blank" class="btn btn-info"><i class="fas fa-print"></i></a>--}}
-                            <a href="{{route('installment.index', $customer->id)}}"  class="btn btn-primary"><i class="fas fa-money-bill"></i></a>
+                            {{--                            <a href="" target="_blank" class="btn btn-info"><i class="fas fa-print"></i></a>--}}
+                            <a href="{{route('installment.index', $customer->id)}}" class="btn btn-primary"><i class="fas fa-money-bill"></i></a>
                         </div>
                     </td>
                 </tr>
@@ -287,7 +314,7 @@
         </table>
     @endif
     {{$customers->links()}}
-    @endsection
+@endsection
 
 
 @section('customFooterScripts')
